@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
-import DatePicker from 'primevue/datepicker'
 import Dialog from 'primevue/dialog'
 import Message from 'primevue/message'
 import SelectButton from 'primevue/selectbutton'
@@ -8,12 +7,12 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ApiError } from '@/api/http'
 import { addLines, createTransportOrder, fetchTransportOrders } from '@/api/transportOrders'
-import type { SalesOrder, TransportOrderSummary, Vehicle } from '@/api/types'
-import { fetchVehicles } from '@/api/vehicles'
+import type { SalesOrder, TransportOrderSummary } from '@/api/types'
 import { useApiError } from '@/composables/useApiError'
 import { useBreakpoint } from '@/composables/useBreakpoint'
-import { fromIsoDate, toIsoDate, todayIso } from '@/utils/dates'
+import { useVehicleAvailability } from '@/composables/useVehicleAvailability'
 import { fitsIn, formatKg, toHundredths, type Locale } from '@/utils/weights'
+import DeliveryDateField from './DeliveryDateField.vue'
 import DraftOrderOption from './DraftOrderOption.vue'
 import VehiclePicker from './VehiclePicker.vue'
 
@@ -27,11 +26,9 @@ const { isMobile, isDesktop } = useBreakpoint()
 type Mode = 'existing' | 'new'
 const mode = ref<Mode>('existing')
 const drafts = ref<TransportOrderSummary[]>([])
-const vehicles = ref<Vehicle[]>([])
-const booked = ref<Record<string, string>>({})
+const { vehicles, booked, deliveryDate, reset: resetAvailability, setDate, loadBooked } = useVehicleAvailability()
 const draftNo = ref<string | null>(null)
 const vehicleCode = ref<string | null>(null)
-const deliveryDate = ref<string>(todayIso())
 const pending = ref(false)
 const error = ref<string | null>(null)
 const notice = ref<string | null>(null)
@@ -55,22 +52,14 @@ async function loadDrafts(): Promise<void> {
   if (!chosenDraft.value) draftNo.value = (target ?? firstFitting)?.no ?? null
 }
 
-async function loadBooked(): Promise<void> {
-  const page = await fetchTransportOrders({ status: null, deliveryDate: deliveryDate.value, page: 1, pageSize: 100 })
-  booked.value = Object.fromEntries(page.items.map((o) => [o.vehicleCode, o.no]))
-  if (vehicleCode.value && booked.value[vehicleCode.value]) vehicleCode.value = null
-}
-
 async function open(): Promise<void> {
   error.value = null
   notice.value = null
   mode.value = 'existing'
   draftNo.value = null
   vehicleCode.value = null
-  deliveryDate.value = todayIso()
   try {
-    const [, list] = await Promise.all([loadDrafts(), fetchVehicles(), loadBooked()])
-    vehicles.value = list
+    await Promise.all([loadDrafts(), resetAvailability()])
   } catch (e) {
     error.value = errorMessage(e)
   }
@@ -96,11 +85,11 @@ function chooseVehicle(code: string): void {
   mode.value = 'new'
 }
 
-async function changeDate(value: Date | Date[] | (Date | null)[] | null | undefined): Promise<void> {
-  if (!(value instanceof Date)) return
-  deliveryDate.value = toIsoDate(value)
+async function changeDate(iso: string): Promise<void> {
   try {
-    await loadBooked()
+    await setDate(iso)
+    // A vehicle chosen for another day may be taken on this one.
+    if (vehicleCode.value && booked.value[vehicleCode.value]) vehicleCode.value = null
   } catch (e) {
     error.value = errorMessage(e)
   }
@@ -212,17 +201,7 @@ async function addToNewOrder(): Promise<string | null> {
         <h3 v-if="!isMobile" class="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">
           {{ t('dialog.new') }}
         </h3>
-        <label class="mb-1 block text-sm font-semibold" for="delivery-date">{{ t('dialog.date') }}</label>
-        <DatePicker
-          input-id="delivery-date"
-          :model-value="fromIsoDate(deliveryDate)"
-          :min-date="fromIsoDate(todayIso())"
-          date-format="dd/mm/yy"
-          show-icon
-          fluid
-          @update:model-value="changeDate"
-        />
-        <small class="mb-3 block text-muted">{{ t('dialog.dateHint') }}</small>
+        <DeliveryDateField class="mb-3" input-id="delivery-date" :model-value="deliveryDate" @update:model-value="changeDate" />
         <p class="mb-1 text-sm font-semibold">
           {{ t('dialog.vehicle') }} <span class="font-normal text-muted">· {{ t('dialog.vehicleHint') }}</span>
         </p>
