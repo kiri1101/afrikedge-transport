@@ -123,4 +123,68 @@ export class TransportOrdersRepository {
     );
     return rows.map(toSalesOrderDto);
   }
+
+  /** Locks the vehicle row until commit: creations for one vehicle run one at a time (R2). */
+  async lockVehicle(
+    tx: SqlRunner,
+    code: string,
+  ): Promise<{ code: string; active: boolean } | null> {
+    const { rows } = await tx.query<{ code: string; active: boolean }>(
+      `SELECT [Code] AS code, [Active] AS active
+       FROM [Vehicle] WITH (UPDLOCK, ROWLOCK)
+       WHERE [Code] = @code`,
+      { code: [sql.NVarChar(20), code] },
+    );
+    return rows[0] ?? null;
+  }
+
+  async findOrderNoFor(
+    tx: SqlRunner,
+    vehicleCode: string,
+    deliveryDate: string,
+  ): Promise<string | null> {
+    const { rows } = await tx.query<{ no: string }>(
+      `SELECT TOP 1 [No_] AS no
+       FROM [Transport Order]
+       WHERE [Vehicle Code] = @vehicleCode AND [Delivery Date] = CONVERT(date, @deliveryDate, 23)`,
+      {
+        vehicleCode: [sql.NVarChar(20), vehicleCode],
+        deliveryDate: [sql.NVarChar(10), deliveryDate],
+      },
+    );
+    return rows[0]?.no ?? null;
+  }
+
+  /** Highest number, locked until commit so two creations never compute the same next one. */
+  async lastOrderNo(tx: SqlRunner): Promise<string | null> {
+    const { rows } = await tx.query<{ no: string }>(
+      `SELECT TOP 1 [No_] AS no
+       FROM [Transport Order] WITH (UPDLOCK, HOLDLOCK)
+       WHERE [No_] LIKE 'TO-%'
+       ORDER BY LEN([No_]) DESC, [No_] DESC`,
+    );
+    return rows[0]?.no ?? null;
+  }
+
+  async insert(
+    tx: SqlRunner,
+    order: {
+      no: string;
+      vehicleCode: string;
+      deliveryDate: string;
+      createdBy: string;
+    },
+  ): Promise<void> {
+    await tx.query(
+      `INSERT INTO [Transport Order] ([No_], [Vehicle Code], [Delivery Date], [Status], [Created By])
+       VALUES (@no, @vehicleCode, CONVERT(date, @deliveryDate, 23), @status, @createdBy)`,
+      {
+        no: [sql.NVarChar(20), order.no],
+        vehicleCode: [sql.NVarChar(20), order.vehicleCode],
+        deliveryDate: [sql.NVarChar(10), order.deliveryDate],
+        status: [sql.TinyInt, TRANSPORT_ORDER_STATUS_CODE.DRAFT],
+        createdBy: [sql.NVarChar(50), order.createdBy],
+      },
+    );
+  }
 }

@@ -1,7 +1,9 @@
-import { Controller, Get, Param, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CurrentUser } from '../auth/current-user.decorator';
+import { RequireAction } from '../auth/require-action';
+import { CreateTransportOrderDto } from './dto/create-transport-order.dto';
 import type { CurrentUser as User } from '../auth/users';
 import { Page } from '../common/pagination';
 import { ListTransportOrdersQuery } from './dto/list-transport-orders.query';
@@ -41,5 +43,18 @@ export class TransportOrdersController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<TransportOrderDetailDto> {
     return withETag(res, await this.service.getDetail(no, user));
+  }
+
+  /** Creates a Draft order: active vehicle, date not in the past, one order per vehicle and date. */
+  @Post()
+  @RequireAction('CREATE')
+  async create(
+    @Body() dto: CreateTransportOrderDto,
+    @CurrentUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<TransportOrderDetailDto> {
+    const detail = await this.service.create(dto, user);
+    res.location(`/transport-orders/${detail.no}`);
+    return withETag(res, detail);
   }
 }
