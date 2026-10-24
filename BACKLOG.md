@@ -58,7 +58,7 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 - ✅ `POST /transport-orders/:no/depart` (commandes → En livraison)
 - ✅ Tests e2e du cycle de vie (9), Swagger vérifié : 10 routes, `X-User-Id` et `If-Match` documentés
 
-### ✅ 6b. Journal d'audit (demande ajoutée pendant l'implémentation)
+### ✅ 6b. Journal d'audit (demande ajoutée pendant l'implémentation) — `482560e`
 - ✅ Identifiant de requête (`X-Request-Id`) propagé jusqu'aux requêtes SQL
 - ✅ Requêtes HTTP : méthode, chemin, utilisateur, corps des modifications ; réponses : statut, durée ; erreurs : code
 - ✅ Activité SQL : lecture / écriture, début / validation / annulation de transaction, lignes touchées, durée
@@ -67,14 +67,14 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 
 ## Implémentation : front
 
-### ⬜ 7. Socle front
-- ⬜ Vite + Vue 3 + Pinia + Router, PrimeVue (Aura, teal), PrimeIcons, Tailwind 4, polices IBM Plex
-- ⬜ i18n FR / EN (messages par code d'erreur)
-- ⬜ Client HTTP (`X-User-Id`, `If-Match`, erreurs problem+json)
-- ⬜ En-tête : navigation, sélecteur d'utilisateur, langue ; barre d'onglets mobile
-- ⬜ Tests : dates, poids, client HTTP
+### ✅ 7. Socle front
+- ✅ Vite + Vue 3 + Pinia + Router, PrimeVue (Aura, teal), PrimeIcons, Tailwind 4, polices IBM Plex
+- ✅ i18n FR / EN (messages par code d'erreur)
+- ✅ Client HTTP (`X-User-Id`, `If-Match`, erreurs problem+json)
+- ✅ En-tête : navigation, sélecteur d'utilisateur, langue ; barre d'onglets mobile
+- ✅ Tests (12) : dates, poids, client HTTP ; vérifié dans le navigateur (couche PrimeVue, aucune bannière de licence, mobile sans défilement horizontal)
 
-### ⬜ 8. Composants d'interface
+### 🔄 8. Composants d'interface
 - ⬜ Plaque d'immatriculation, étiquette de statut, étapes du cycle de vie
 - ⬜ Jauge de chargement segmentée (projection, dépassement)
 - ⬜ États chargement / vide / erreur

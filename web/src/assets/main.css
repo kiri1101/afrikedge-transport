@@ -1,0 +1,48 @@
+/* PrimeVue sits between Tailwind's base and utilities, so utility classes can override components. */
+@layer theme, base, primevue, components, utilities;
+
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-sans/700.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+
+/* "Poste de répartition" (specification §9.4). */
+@theme {
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --color-ink: #0f1b2d;
+  --color-ink-2: #1c2b43;
+  --color-ink-line: #33445f;
+  --color-canvas: #f3f5f8;
+  --color-line: #e1e6ed;
+  --color-line-soft: #eef1f5;
+  --color-muted: #5f6f86;
+
+  --color-load: #0f766e;
+  --color-load-alt: #11998c;
+  --color-projected: #14b8a6;
+  --color-warn: #d97706;
+  --color-warn-alt: #f59e0b;
+  --color-over: #ef4444;
+}
+
+:root {
+  /* No dark mode: keep native controls and scrollbars light too. */
+  color-scheme: light;
+}
+
+body {
+  @apply bg-canvas font-sans text-slate-900 antialiased;
+}
+
+/* Numbers, weights and order codes line up in columns. */
+.tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
