@@ -29,3 +29,13 @@ export function loadLevel(usedKg: number, capacityKg: number): LoadLevel {
   if (used * 100 > capacity * WARN_PERCENT) return 'warn'
   return 'ok'
 }
+
+/** Would `addKg` still fit in an order loaded with `loadedKg` out of `capacityKg`? (Same rule as the API.) */
+export function fitsIn(loadedKg: number, capacityKg: number, addKg: number): boolean {
+  return toHundredths(loadedKg) + toHundredths(addKg) <= toHundredths(capacityKg)
+}
+
+/** Weight above capacity once `addKg` is added (0 when it fits). */
+export function excessKg(loadedKg: number, capacityKg: number, addKg: number): number {
+  return Math.max(0, toHundredths(loadedKg) + toHundredths(addKg) - toHundredths(capacityKg)) / 100
+}

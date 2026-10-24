@@ -3,10 +3,15 @@ import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import Column from 'primevue/column'
 import DataTable, { type DataTablePageEvent } from 'primevue/datatable'
+import Message from 'primevue/message'
 import Select from 'primevue/select'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { RouterLink, useRoute } from 'vue-router'
 import type { SalesOrder } from '@/api/types'
+import AddToTransportDialog from '@/components/planning/AddToTransportDialog.vue'
 import SalesOrderCards from '@/components/planning/SalesOrderCards.vue'
 import SelectionBar from '@/components/planning/SelectionBar.vue'
 import AsyncState from '@/components/ui/AsyncState.vue'
@@ -20,8 +25,19 @@ const { errorMessage } = useApiError()
 const { isMobile, isDesktop } = useBreakpoint()
 const store = useSalesOrdersStore()
 
-/** Opened by the selection bar; the dialog itself arrives with the next task. */
+const route = useRoute()
+const toast = useToast()
 const dialogVisible = ref(false)
+/** Set when coming from an order's "Add orders" button: the dialog preselects it. */
+const targetNo = computed(() => (typeof route.query.target === 'string' ? route.query.target : undefined))
+
+function onAdded(no: string): void {
+  const n = store.selection.length
+  toast.add({ group: 'added', severity: 'success', summary: t('dialog.success', { n, no }, n), detail: no, life: 6000 })
+  store.clearSelection()
+  void store.load()
+  void store.loadCities()
+}
 
 onMounted(() => {
   void store.load()
@@ -43,6 +59,8 @@ const rowClass = (order: SalesOrder) => (store.isSelected(order.no) ? '!bg-teal-
 
 <template>
   <section>
+    <Message v-if="targetNo" severity="info" :closable="false" class="mb-3">{{ t('salesOrders.targetHint', { no: targetNo }) }}</Message>
+
     <header class="mb-4">
       <h1 class="text-xl font-bold tracking-tight">{{ t('salesOrders.title') }}</h1>
       <p v-if="store.result" class="text-sm text-muted">
@@ -157,5 +175,26 @@ const rowClass = (order: SalesOrder) => (store.isSelected(order.no) ? '!bg-teal-
       @clear="store.clearSelection()"
       @add="dialogVisible = true"
     />
+
+    <AddToTransportDialog
+      v-model:visible="dialogVisible"
+      :selection="store.selection"
+      :target-no="targetNo"
+      @done="onAdded"
+    />
+
+    <Toast group="added" position="top-right">
+      <template #message="{ message }">
+        <div class="flex flex-1 items-start gap-2">
+          <i class="pi pi-check-circle mt-0.5 text-emerald-600" aria-hidden="true" />
+          <div>
+            <p class="font-semibold">{{ message.summary }}</p>
+            <RouterLink :to="`/transport-orders/${message.detail}`" class="text-sm font-semibold text-teal-700 underline">
+              {{ t('dialog.open') }}
+            </RouterLink>
+          </div>
+        </div>
+      </template>
+    </Toast>
   </section>
 </template>

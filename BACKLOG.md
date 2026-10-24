@@ -80,20 +80,20 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 - ✅ États chargement / vide / erreur
 - ✅ Tests de la jauge (4) : largeurs exactes, seuil 85 %, projection, dépassement
 
-### ✅ 9. Écran Commandes à planifier
+### ✅ 9. Écran Commandes à planifier — `173e713`
 - ✅ Filtre ville, pagination serveur
 - ✅ Sélection conservée entre les pages, barre de sélection
 - ✅ Tableau (bureau, tablette) / cartes (mobile)
 - ✅ Tests du store (5) ; vérifié dans le navigateur à 1280 et 375 px avec les données réelles
 
-### 🔄 10. Dialogue « Ajouter à un transport »
-- ⬜ Ordres brouillon avec jauge projetée (ceux où la sélection ne tient pas grisés)
-- ⬜ Nouvel ordre : date puis véhicules disponibles
-- ⬜ Gestion du 412, bouton désactivé pendant l'envoi
-- ⬜ Plein écran sur mobile
-- ⬜ Tests des composants
+### ✅ 10. Dialogue « Ajouter à un transport »
+- ✅ Ordres brouillon avec jauge projetée (ceux où la sélection ne tient pas grisés)
+- ✅ Nouvel ordre : date puis véhicules disponibles
+- ✅ Gestion du 412, bouton désactivé pendant l'envoi
+- ✅ Plein écran sur mobile
+- ✅ Tests des composants (5) ; parcours vérifié avec l'API : TO-0003 grisé « Dépasse de 695,50 kg », VH-01/VH-03 pris le 25/10, ajout à TO-0004 → toast + liste à 30
 
-### ⬜ 11. Écran Ordres de transport
+### 🔄 11. Écran Ordres de transport
 - ⬜ Filtres statut et date, pagination, mini-jauge
 - ⬜ Création d'un ordre vide
 - ⬜ Cartes sur mobile
