@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquettes bureau</title>
+<style>body{margin:0;padding:24px;background:#fff;font-family:system-ui,sans-serif;color:#0f172a}.subtitle{color:#5f6f86;margin-top:0}h2{font-size:22px}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  .ds { --ink:#0f1b2d; --ink2:#1c2b43; --bg:#f3f5f8; --surface:#fff; --line:#e1e6ed; --line2:#eef1f5; --muted:#5f6f86; --text:#0f172a;
+        --teal:#0f766e; --teal2:#14b8a6; --teal3:#5eead4; --tealsoft:#e6f6f4; --amber:#b45309; --ambersoft:#fdf3dc;
+        --red:#c81e1e; --redsoft:#fde8e8; --blue:#1d4ed8; --bluesoft:#e3ebfd; --green:#047857; --greensoft:#ddf3ea; --slatesoft:#e8edf3;
+        font-family:'IBM Plex Sans',system-ui,sans-serif; color:var(--text); font-size:13px; line-height:1.45; }
+  .ds * { box-sizing:border-box; }
+  .ds .mono { font-family:'IBM Plex Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums; }
+  .ds h2.sec { font-size:15px; margin:28px 0 4px; color:var(--text); }
+  .ds p.secsub { margin:0 0 10px; color:var(--muted); }
+  .ds .screen { max-width:1180px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--bg); box-shadow:0 10px 30px rgba(15,27,45,.08); }
+
+  /* header */
+  .ds .hdr { display:flex; align-items:center; gap:22px; height:54px; padding:0 20px; background:var(--ink); color:#dbe4f0; }
+  .ds .logo { display:flex; align-items:center; gap:9px; font-weight:700; color:#fff; letter-spacing:.2px; }
+  .ds .logo .mark { width:26px; height:26px; border-radius:7px; background:linear-gradient(135deg,var(--teal2),var(--teal)); display:grid; place-items:center; color:#fff; font-size:13px; }
+  .ds .logo small { display:block; font-weight:500; font-size:10px; color:#8fa3bf; letter-spacing:.4px; text-transform:uppercase; }
+  .ds .navl { display:flex; gap:4px; height:100%; }
+  .ds .navl a { display:flex; align-items:center; padding:0 12px; color:#a9b8cc; text-decoration:none; font-weight:500; border-bottom:2px solid transparent; }
+  .ds .navl a.on { color:#fff; border-bottom-color:var(--teal2); }
+  .ds .hdr .r { margin-left:auto; display:flex; align-items:center; gap:12px; }
+  .ds .lang { display:flex; border:1px solid #33445f; border-radius:7px; overflow:hidden; font-size:11px; font-weight:600; }
+  .ds .lang span { padding:3px 8px; color:#8fa3bf; } .ds .lang span.on { background:#24364f; color:#fff; }
+  .ds .who { display:flex; align-items:center; gap:8px; padding:4px 10px 4px 4px; border:1px solid #33445f; border-radius:999px; background:var(--ink2); }
+  .ds .av { width:26px; height:26px; border-radius:50%; display:grid; place-items:center; font-weight:700; font-size:12px; color:var(--ink); background:#fcd34d; }
+  .ds .av.e { background:#a5b4fc; }
+  .ds .who b { color:#fff; font-weight:600; } .ds .who .role { font-size:10px; color:#fcd34d; text-transform:uppercase; letter-spacing:.4px; font-weight:600; }
+
+  /* page */
+  .ds .page { padding:20px 22px 22px; }
+  .ds .ph { display:flex; align-items:flex-end; gap:12px; margin-bottom:14px; }
+  .ds .ph h1 { margin:0; font-size:20px; font-weight:700; letter-spacing:-.2px; }
+  .ds .ph .sub { color:var(--muted); }
+  .ds .ph .r { margin-left:auto; display:flex; gap:8px; }
+  .ds .card { background:var(--surface); border:1px solid var(--line); border-radius:10px; }
+  .ds .toolbar { display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line2); }
+  .ds .ctl { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 10px; border:1px solid var(--line); border-radius:7px; background:#fff; color:var(--text); white-space:nowrap; }
+  .ds .ctl .lbl { color:var(--muted); }
+  .ds .seg { display:inline-flex; border:1px solid var(--line); border-radius:7px; overflow:hidden; height:32px; }
+  .ds .seg span { display:flex; align-items:center; padding:0 11px; border-right:1px solid var(--line); color:var(--muted); font-weight:500; }
+  .ds .seg span:last-child { border-right:0; } .ds .seg span.on { background:var(--tealsoft); color:var(--teal); font-weight:600; }
+  .ds .btn { display:inline-flex; align-items:center; gap:6px; height:32px; padding:0 13px; border-radius:7px; border:1px solid var(--line); background:#fff; font-weight:600; white-space:nowrap; color:var(--text); }
+  .ds .btn.pri { background:var(--teal); border-color:var(--teal); color:#fff; }
+  .ds .btn.ghost { border-color:transparent; background:transparent; color:var(--muted); }
+  .ds .btn.danger { color:var(--red); border-color:#f3c2c2; background:#fff; }
+  .ds .btn.sm { height:26px; padding:0 9px; font-size:12px; }
+  .ds .btn.dis { opacity:.45; }
+
+  /* table */
+  .ds table.t { width:100%; border-collapse:collapse; }
+  .ds .t th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); font-weight:600; padding:9px 12px; border-bottom:1px solid var(--line); background:#fafbfc; }
+  .ds .t td { padding:9px 12px; border-bottom:1px solid var(--line2); vertical-align:middle; }
+  .ds .t .num { text-align:right; }
+  .ds .t tr.sel td { background:#f0faf8; }
+  .ds .t tr.sel td:first-child { box-shadow:inset 3px 0 0 var(--teal); }
+  .ds .t tr.link td { cursor:pointer; }
+  .ds .cust small { display:block; color:var(--muted); font-size:11px; }
+  .ds .cb { width:15px; height:15px; border:1.5px solid #9aa8bb; border-radius:4px; display:inline-grid; place-items:center; font-size:10px; color:#fff; }
+  .ds .cb.on { background:var(--teal); border-color:var(--teal); }
+  .ds .foot { display:flex; align-items:center; gap:10px; padding:9px 12px; color:var(--muted); }
+  .ds .pg { display:flex; gap:4px; margin-left:auto; }
+  .ds .pg span { min-width:28px; height:28px; display:grid; place-items:center; border-radius:6px; }
+  .ds .pg span.on { background:var(--tealsoft); color:var(--teal); font-weight:700; }
+  .ds .selbar { display:flex; align-items:center; gap:12px; margin-top:12px; padding:10px 12px 10px 16px; border-radius:10px; background:var(--ink); color:#dbe4f0; }
+  .ds .selbar b { color:#fff; } .ds .selbar .w { color:var(--teal3); }
+  .ds .selbar .r { margin-left:auto; display:flex; gap:8px; }
+  .ds .selbar .btn.ghost { color:#a9b8cc; }
+
+  /* tags, plates */
+  .ds .tag { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:2px 9px; border-radius:999px; white-space:nowrap; }
+  .ds .tag::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .ds .tag.draft { background:var(--slatesoft); color:#334155; }
+  .ds .tag.valid { background:var(--bluesoft); color:var(--blue); }
+  .ds .tag.gone { background:var(--greensoft); color:var(--green); }
+  .ds .plate { display:inline-flex; align-items:stretch; border:1.5px solid #1f2937; border-radius:4px; background:#fff; overflow:hidden; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:11px; line-height:1; vertical-align:middle; }
+  .ds .plate::before { content:''; width:4px; background:linear-gradient(#007a5e 0 33.3%,#ce1126 33.3% 66.6%,#fcd116 66.6%); }
+  .ds .plate span { padding:3px 6px; letter-spacing:.6px; }
+  .ds .vc { color:var(--muted); font-size:11px; margin-left:6px; }
+
+  /* load bar */
+  .ds .load { display:flex; height:12px; border-radius:6px; overflow:hidden; background:repeating-linear-gradient(-45deg,#eef1f5 0 5px,#e4e9ef 5px 10px); }
+  .ds .load.big { height:22px; border-radius:7px; }
+  .ds .load i { display:block; height:100%; border-right:2px solid #fff; }
+  .ds .load i.a { background:var(--teal); } .ds .load i.b { background:#11998c; } .ds .load i.c { background:var(--teal2); }
+  .ds .load i.warn { background:#d97706; } .ds .load i.warn2 { background:#f59e0b; }
+  .ds .load i.proj { background:repeating-linear-gradient(45deg,var(--teal2) 0 5px,#99f6e4 5px 10px); }
+  .ds .load i.over { background:repeating-linear-gradient(45deg,#ef4444 0 5px,#fecaca 5px 10px); }
+  .ds .mini { display:flex; align-items:center; gap:8px; } .ds .mini .load { width:110px; height:8px; } .ds .mini .pct { width:36px; text-align:right; font-size:12px; }
+
+  /* dialog */
+  .ds .scrim { padding:26px; background:rgba(15,27,45,.45); }
+  .ds .dlg { max-width:1060px; margin:0 auto; background:#fff; border-radius:12px; box-shadow:0 20px 50px rgba(0,0,0,.3); }
+  .ds .dlg-h { display:flex; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line); }
+  .ds .dlg-h h3 { margin:0; font-size:16px; } .ds .dlg-h .x { margin-left:auto; color:var(--muted); font-size:18px; }
+  .ds .dlg-b { display:grid; grid-template-columns:1fr 1fr; }
+  .ds .dlg-col { padding:14px 18px; } .ds .dlg-col + .dlg-col { border-left:1px solid var(--line); background:#fbfcfd; }
+  .ds .dlg-col h4 { margin:0 0 10px; font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+  .ds .opt { display:block; border:1.5px solid var(--line); border-radius:9px; padding:10px 12px; margin-bottom:8px; background:#fff; }
+  .ds .opt.pick { border-color:var(--teal); box-shadow:0 0 0 3px var(--tealsoft); }
+  .ds .opt.no { background:#fbfbfc; }
+  .ds .opt .top { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+  .ds .opt .top .r { margin-left:auto; }
+  .ds .radio { width:15px; height:15px; border-radius:50%; border:1.5px solid #9aa8bb; display:inline-block; }
+  .ds .radio.on { border:5px solid var(--teal); }
+  .ds .fit { font-size:12px; font-weight:600; } .ds .fit.ok { color:var(--green); } .ds .fit.ko { color:var(--red); }
+  .ds .meta { display:flex; justify-content:space-between; margin-top:5px; font-size:12px; color:var(--muted); }
+  .ds .vrow { display:flex; align-items:center; gap:10px; padding:8px 10px; border:1.5px solid var(--line); border-radius:8px; margin-bottom:6px; background:#fff; }
+  .ds .vrow.pick { border-color:var(--teal); box-shadow:0 0 0 3px var(--tealsoft); }
+  .ds .vrow.no { opacity:.55; background:#f7f8fa; }
+  .ds .vrow .cap { margin-left:auto; font-size:12px; }
+  .ds .vrow .why { font-size:11px; color:var(--amber); }
+  .ds .field { margin-bottom:12px; } .ds .field label { display:block; font-size:12px; font-weight:600; margin-bottom:5px; }
+  .ds .dlg-f { display:flex; align-items:center; gap:8px; padding:12px 18px; border-top:1px solid var(--line); }
+  .ds .dlg-f .r { margin-left:auto; display:flex; gap:8px; }
+
+  /* detail */
+  .ds .back { color:var(--muted); font-size:12px; margin-bottom:6px; }
+  .ds .stepper { display:flex; align-items:center; gap:0; margin-left:auto; }
+  .ds .st { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted); }
+  .ds .st .dot { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:700; border:2px solid #c5cfdb; background:#fff; color:#8a98ab; }
+  .ds .st.done .dot { background:var(--teal); border-color:var(--teal); color:#fff; }
+  .ds .st.cur .dot { border-color:var(--teal); color:var(--teal); box-shadow:0 0 0 4px var(--tealsoft); }
+  .ds .st.cur { color:var(--text); font-weight:600; }
+  .ds .st small { display:block; font-size:10px; color:var(--muted); font-weight:400; }
+  .ds .bar { width:34px; height:2px; background:#c5cfdb; margin:0 8px; } .ds .bar.done { background:var(--teal); }
+  .ds .dgrid { display:grid; grid-template-columns:1fr 300px; gap:14px; }
+  .ds .hero { padding:16px 18px; }
+  .ds .hero .nums { display:flex; align-items:baseline; gap:10px; margin-bottom:10px; }
+  .ds .hero .big { font-size:26px; font-weight:700; letter-spacing:-.5px; }
+  .ds .hero .of { color:var(--muted); font-size:15px; }
+  .ds .hero .badge { margin-left:auto; font-weight:700; color:var(--amber); background:var(--ambersoft); padding:3px 10px; border-radius:999px; font-size:12px; }
+  .ds .legend { display:flex; gap:16px; margin-top:9px; font-size:12px; color:var(--muted); flex-wrap:wrap; }
+  .ds .legend i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+  .ds .side .blk { padding:14px 16px; border-bottom:1px solid var(--line2); }
+  .ds .side .blk:last-child { border-bottom:0; }
+  .ds .side h4 { margin:0 0 10px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+  .ds .kv { display:flex; justify-content:space-between; padding:4px 0; } .ds .kv span:first-child { color:var(--muted); }
+  .ds .stack { display:flex; flex-direction:column; gap:8px; }
+  .ds .stack .btn { justify-content:center; }
+  .ds .hint { display:flex; gap:8px; padding:9px 10px; border-radius:8px; background:var(--bluesoft); color:#1e3a8a; font-size:12px; }
+
+  /* matrix + states */
+  .ds .mx { width:100%; border-collapse:separate; border-spacing:0; background:#fff; border:1px solid var(--line); border-radius:10px; overflow:hidden; max-width:1180px; }
+  .ds .mx th, .ds .mx td { padding:10px 12px; border-bottom:1px solid var(--line2); text-align:left; vertical-align:top; }
+  .ds .mx th { background:#fafbfc; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+  .ds .mx td .btn { margin:0 6px 6px 0; }
+  .ds .mx .note { font-size:12px; color:var(--muted); }
+  .ds .states { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; max-width:1180px; }
+  .ds .sc { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px; min-height:150px; }
+  .ds .sc h5 { margin:0 0 10px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+  .ds .sk { height:10px; border-radius:5px; background:linear-gradient(90deg,#eef1f5,#e2e7ee,#eef1f5); margin-bottom:9px; }
+  .ds .empty { text-align:center; padding-top:6px; color:var(--muted); }
+  .ds .empty .ic { font-size:26px; margin-bottom:4px; }
+  .ds .empty b { display:block; color:var(--text); margin-bottom:2px; }
+  .ds .alert { border-radius:8px; padding:10px 11px; font-size:12px; }
+  .ds .alert.err { background:var(--redsoft); color:#7f1d1d; border:1px solid #f6caca; }
+  .ds .alert.warn { background:var(--ambersoft); color:#78350f; border:1px solid #f3dca6; }
+  .ds .alert b { display:block; margin-bottom:3px; }
+  .ds .alert code { font-size:11px; opacity:.75; }
+  .ds .dir { display:grid; grid-template-columns:1.2fr 1fr 1.4fr; gap:12px; max-width:1180px; }
+  .ds .dir .sc { min-height:auto; }
+  .ds .sw { display:flex; gap:8px; flex-wrap:wrap; } .ds .sw span { width:62px; }
+  .ds .sw i { display:block; height:30px; border-radius:6px; margin-bottom:3px; border:1px solid rgba(0,0,0,.06); }
+  .ds .sw small { font-size:10px; color:var(--muted); }
+</style>
+
+<div class="ds">
+
+<h2 style="margin:0 0 2px">Wireframe v2 · « Poste de répartition »</h2>
+<p class="subtitle" style="margin-bottom:14px">Les 3 écrans du sujet, flux A retenu, données réelles de <code>init.sql</code>. Base PrimeVue Aura + Tailwind ; à valider : mise en page, hiérarchie, ton visuel.</p>
+
+<div class="dir">
+  <div class="sc"><h5>Couleurs</h5>
+    <div class="sw">
+      <span><i style="background:#0f1b2d"></i><small>Encre · en-tête</small></span>
+      <span><i style="background:#0f766e"></i><small>Primaire</small></span>
+      <span><i style="background:#14b8a6"></i><small>Projeté</small></span>
+      <span><i style="background:#d97706"></i><small>&gt; 85 %</small></span>
+      <span><i style="background:#ef4444"></i><small>Dépassement</small></span>
+      <span><i style="background:#f3f5f8"></i><small>Fond</small></span>
+    </div>
+  </div>
+  <div class="sc"><h5>Typographie</h5>
+    <div style="font-size:18px;font-weight:700">IBM Plex Sans</div>
+    <div class="mono" style="font-size:14px;margin-top:3px">TO-0004 · 1 360,00 kg</div>
+    <div style="color:var(--muted);font-size:12px;margin-top:6px">Mono à chiffres tabulaires pour les numéros et les poids : les colonnes s'alignent.</div>
+  </div>
+  <div class="sc"><h5>Signatures</h5>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px"><span class="plate"><span>LT-482-AB</span></span><span style="color:var(--muted);font-size:12px">Immatriculation en plaque</span></div>
+    <div class="load" style="margin-bottom:4px"><i class="a" style="width:43%"></i><i class="b" style="width:48%"></i></div>
+    <div style="color:var(--muted);font-size:12px">Jauge segmentée : un segment par commande, hachures = capacité libre</div>
+  </div>
+</div>
+
+<!-- ============================ ÉCRAN 1 ============================ -->
+<h2 class="sec">1 · Commandes à planifier</h2>
+<p class="secsub">Filtre ville, pagination serveur, sélection conservée entre les pages, barre de sélection fixe en bas.</p>
+
+<div class="screen">
+  <div class="hdr">
+    <div class="logo"><div class="mark">▤</div><div>Transports<small>Planification</small></div></div>
+    <nav class="navl"><a class="on">Commandes à planifier</a><a>Ordres de transport</a></nav>
+    <div class="r">
+      <div class="lang"><span class="on">FR</span><span>EN</span></div>
+      <div class="who"><div class="av">D</div><div><b>diane</b><div class="role">Répartitrice</div></div><span style="color:#8fa3bf">▾</span></div>
+    </div>
+  </div>
+  <div class="page">
+    <div class="ph"><div><h1>Commandes à planifier</h1><div class="sub">33 commandes en attente · 11 à Douala</div></div></div>
+    <div class="card">
+      <div class="toolbar">
+        <span class="ctl"><span class="lbl">Ville</span> Douala <span style="color:var(--muted)">▾</span></span>
+        <span class="btn ghost sm">Réinitialiser</span>
+      </div>
+      <table class="t">
+        <tr><th style="width:36px"><span class="cb"></span></th><th>N°</th><th>Client</th><th>Ville</th><th class="num">Poids</th></tr>
+        <tr class="sel"><td><span class="cb on">✓</span></td><td class="mono">SO-1008</td><td class="cust">Quincaillerie Ndokoti<small class="mono">C0001</small></td><td>Douala</td><td class="num mono">430,00 kg</td></tr>
+        <tr class="sel"><td><span class="cb on">✓</span></td><td class="mono">SO-1011</td><td class="cust">Librairie des Écoles<small class="mono">C0010</small></td><td>Douala</td><td class="num mono">260,00 kg</td></tr>
+        <tr class="sel"><td><span class="cb on">✓</span></td><td class="mono">SO-1013</td><td class="cust">Clinique Bonamoussadi<small class="mono">C0012</small></td><td>Douala</td><td class="num mono">145,50 kg</td></tr>
+        <tr><td><span class="cb"></span></td><td class="mono">SO-1014</td><td class="cust">Supermarché Akwa Centre<small class="mono">C0002</small></td><td>Douala</td><td class="num mono">1 980,00 kg</td></tr>
+        <tr><td><span class="cb"></span></td><td class="mono">SO-1017</td><td class="cust">Restaurant Le Wouri<small class="mono">C0014</small></td><td>Douala</td><td class="num mono">95,00 kg</td></tr>
+        <tr><td><span class="cb"></span></td><td class="mono">SO-1023</td><td class="cust">Briqueterie de Bonabéri<small class="mono">C0017</small></td><td>Douala</td><td class="num mono">6 500,00 kg</td></tr>
+      </table>
+      <div class="foot">1–10 sur 11<div class="pg"><span>‹</span><span class="on">1</span><span>2</span><span>›</span></div><span class="ctl" style="height:28px">10 / page ▾</span></div>
+    </div>
+    <div class="selbar"><b>3 commandes sélectionnées</b><span class="mono w">835,50 kg</span>
+      <div class="r"><span class="btn ghost sm">Vider la sélection</span><span class="btn pri">Ajouter à un transport →</span></div></div>
+  </div>
+</div>
+
+<p class="secsub" style="margin-top:16px">↳ Clic sur <b>Ajouter à un transport</b> : un seul dialogue, les deux chemins côte à côte (pas d'onglets cachés).</p>
+
+<div class="screen">
+  <div class="scrim">
+    <div class="dlg">
+      <div class="dlg-h"><h3>Ajouter 3 commandes</h3><span class="mono" style="color:var(--teal);font-weight:600">835,50 kg</span><span class="x">✕</span></div>
+      <div class="dlg-b">
+        <div class="dlg-col">
+          <h4>Dans un ordre brouillon</h4>
+          <div class="opt pick">
+            <div class="top"><span class="radio on"></span><b class="mono">TO-0004</b><span class="plate"><span>LT-905-GH</span></span><span class="vc">26/10/2026</span><span class="r fit ok">✓ Rentre</span></div>
+            <div class="load"><i class="proj" style="width:16.7%"></i></div>
+            <div class="meta"><span class="mono">0 → 835,50 / 5 000 kg</span><span>17 % · 4 164,50 kg libres</span></div>
+          </div>
+          <div class="opt no">
+            <div class="top"><span class="radio"></span><b class="mono">TO-0003</b><span class="plate"><span>LT-482-AB</span></span><span class="vc">25/10/2026</span><span class="r fit ko">✕ Dépasse de 695,50 kg</span></div>
+            <div class="load"><i class="a" style="width:42.7%"></i><i class="b" style="width:48%"></i><i class="over" style="width:9.3%"></i></div>
+            <div class="meta"><span class="mono">1 360 → 2 195,50 / 1 500 kg</span><span>146 %</span></div>
+          </div>
+        </div>
+        <div class="dlg-col">
+          <h4>Ou dans un nouvel ordre</h4>
+          <div class="field"><label>Date de livraison</label><span class="ctl" style="width:100%">📅 <span class="mono">25/10/2026</span><span style="margin-left:auto;color:var(--muted);font-size:11px">aujourd'hui ou après</span></span></div>
+          <div class="field"><label>Véhicule <span style="font-weight:400;color:var(--muted)">· disponibles ce jour-là</span></label>
+            <div class="vrow pick"><span class="radio on"></span><span class="plate"><span>LT-810-ST</span></span><span class="vc mono">VH-09</span><span class="cap mono">1 200 kg</span></div>
+            <div class="vrow"><span class="radio"></span><span class="plate"><span>CE-093-UV</span></span><span class="vc mono">VH-10</span><span class="cap mono">2 000 kg</span></div>
+            <div class="vrow no"><span class="radio"></span><span class="plate"><span>LT-482-AB</span></span><span class="vc mono">VH-01</span><span class="why">Déjà TO-0003 ce jour</span><span class="cap mono">1 500 kg</span></div>
+            <div class="vrow no"><span class="radio"></span><span class="plate"><span>CE-731-EF</span></span><span class="vc mono">VH-03</span><span class="why">Déjà TO-0002 ce jour</span><span class="cap mono">3 500 kg</span></div>
+            <div style="font-size:11px;color:var(--muted)">+ 4 autres · véhicules trop petits pour 835,50 kg grisés avec la raison</div>
+          </div>
+        </div>
+      </div>
+      <div class="dlg-f"><span style="color:var(--muted);font-size:12px">L'API revérifie tout ; un refus s'affiche ici sans perdre la sélection.</span>
+        <div class="r"><span class="btn">Annuler</span><span class="btn pri">Ajouter à TO-0004</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ ÉCRAN 2 ============================ -->
+<h2 class="sec">2 · Ordres de transport</h2>
+<p class="secsub">Filtres statut (segmenté) + date ; mini-jauge par ligne ; clic sur une ligne → détail.</p>
+
+<div class="screen">
+  <div class="hdr">
+    <div class="logo"><div class="mark">▤</div><div>Transports<small>Planification</small></div></div>
+    <nav class="navl"><a>Commandes à planifier</a><a class="on">Ordres de transport</a></nav>
+    <div class="r"><div class="lang"><span class="on">FR</span><span>EN</span></div>
+      <div class="who"><div class="av e">E</div><div><b>eric</b><div class="role" style="color:#a5b4fc">Resp. logistique</div></div><span style="color:#8fa3bf">▾</span></div></div>
+  </div>
+  <div class="page">
+    <div class="ph"><div><h1>Ordres de transport</h1><div class="sub">4 ordres</div></div><div class="r"><span class="btn pri">+ Nouvel ordre</span></div></div>
+    <div class="card">
+      <div class="toolbar">
+        <div class="seg"><span class="on">Tous</span><span>Brouillon</span><span>Validé</span><span>Parti</span></div>
+        <span class="ctl"><span class="lbl">Date</span> jj/mm/aaaa 📅</span>
+      </div>
+      <table class="t">
+        <tr><th>N°</th><th>Statut</th><th>Livraison</th><th>Véhicule</th><th class="num">Cmd.</th><th>Chargement</th><th>Créé par</th></tr>
+        <tr class="link"><td class="mono"><b>TO-0004</b></td><td><span class="tag draft">Brouillon</span></td><td class="mono">26/10/2026</td><td><span class="plate"><span>LT-905-GH</span></span><span class="vc mono">VH-04</span></td><td class="num mono">0</td><td><div class="mini"><div class="load"></div><span class="pct mono">0 %</span></div></td><td>eric</td></tr>
+        <tr class="link"><td class="mono"><b>TO-0003</b></td><td><span class="tag draft">Brouillon</span></td><td class="mono">25/10/2026</td><td><span class="plate"><span>LT-482-AB</span></span><span class="vc mono">VH-01</span></td><td class="num mono">2</td><td><div class="mini"><div class="load"><i class="warn" style="width:42.7%"></i><i class="warn2" style="width:48%"></i></div><span class="pct mono" style="color:var(--amber)">91 %</span></div></td><td>diane</td></tr>
+        <tr class="link"><td class="mono"><b>TO-0002</b></td><td><span class="tag valid">Validé</span></td><td class="mono">25/10/2026</td><td><span class="plate"><span>CE-731-EF</span></span><span class="vc mono">VH-03</span></td><td class="num mono">3</td><td><div class="mini"><div class="load"><i class="warn" style="width:31.4%"></i><i class="warn2" style="width:27.1%"></i><i class="warn" style="width:37.1%"></i></div><span class="pct mono" style="color:var(--amber)">96 %</span></div></td><td>diane</td></tr>
+        <tr class="link"><td class="mono"><b>TO-0001</b></td><td><span class="tag gone">Parti</span></td><td class="mono">21/10/2026</td><td><span class="plate"><span>LT-219-CD</span></span><span class="vc mono">VH-02</span></td><td class="num mono">2</td><td><div class="mini"><div class="load"><i class="a" style="width:34%"></i><i class="b" style="width:48%"></i></div><span class="pct mono">82 %</span></div></td><td>diane</td></tr>
+      </table>
+      <div class="foot">1–4 sur 4<div class="pg"><span>‹</span><span class="on">1</span><span>›</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ ÉCRAN 3 ============================ -->
+<h2 class="sec">3 · Détail d'un ordre</h2>
+<p class="secsub">La jauge est le héros de la page. Les actions viennent de <code>allowedActions</code> renvoyé par l'API ; quand une action manque, on dit pourquoi.</p>
+
+<div class="screen">
+  <div class="hdr">
+    <div class="logo"><div class="mark">▤</div><div>Transports<small>Planification</small></div></div>
+    <nav class="navl"><a>Commandes à planifier</a><a class="on">Ordres de transport</a></nav>
+    <div class="r"><div class="lang"><span class="on">FR</span><span>EN</span></div>
+      <div class="who"><div class="av">D</div><div><b>diane</b><div class="role">Répartitrice</div></div><span style="color:#8fa3bf">▾</span></div></div>
+  </div>
+  <div class="page">
+    <div class="back">← Ordres de transport</div>
+    <div class="ph">
+      <div style="display:flex;align-items:center;gap:10px"><h1 class="mono">TO-0003</h1><span class="tag draft">Brouillon</span></div>
+      <div class="stepper">
+        <div class="st cur"><div class="dot">1</div><div>Brouillon<small>créé par diane</small></div></div>
+        <div class="bar"></div>
+        <div class="st"><div class="dot">2</div><div>Validé<small>—</small></div></div>
+        <div class="bar"></div>
+        <div class="st"><div class="dot">3</div><div>Parti<small>—</small></div></div>
+      </div>
+    </div>
+
+    <div class="dgrid">
+      <div class="stack" style="gap:14px">
+        <div class="card hero">
+          <div class="nums"><span class="big mono">1 360,00</span><span class="of mono">/ 1 500,00 kg</span><span class="badge">91 % · 140 kg libres</span></div>
+          <div class="load big"><i class="warn" style="width:42.7%"></i><i class="warn2" style="width:48%"></i></div>
+          <div class="legend"><span><i style="background:#d97706"></i><span class="mono">SO-1006</span> · 640 kg</span><span><i style="background:#f59e0b"></i><span class="mono">SO-1007</span> · 720 kg</span><span><i style="background:repeating-linear-gradient(-45deg,#eef1f5 0 3px,#d6dde6 3px 6px)"></i>Libre · 140 kg</span></div>
+        </div>
+        <div class="card">
+          <div class="toolbar"><b>Commandes transportées</b><span style="color:var(--muted)">· 2</span><span class="btn sm" style="margin-left:auto">+ Ajouter des commandes</span></div>
+          <table class="t">
+            <tr><th>N°</th><th>Client</th><th>Ville</th><th class="num">Poids</th><th style="width:90px"></th></tr>
+            <tr><td class="mono">SO-1006</td><td class="cust">Agro Distribution Ouest<small class="mono">C0006</small></td><td>Bafoussam</td><td class="num mono">640,00 kg</td><td class="num"><span class="btn danger sm">Retirer</span></td></tr>
+            <tr><td class="mono">SO-1007</td><td class="cust">Café Mont Bamboutos<small class="mono">C0007</small></td><td>Bafoussam</td><td class="num mono">720,00 kg</td><td class="num"><span class="btn danger sm">Retirer</span></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card side">
+        <div class="blk"><h4>Véhicule</h4><span class="plate" style="font-size:14px"><span>LT-482-AB</span></span><span class="vc mono">VH-01</span>
+          <div class="kv" style="margin-top:8px"><span>Capacité</span><span class="mono">1 500,00 kg</span></div></div>
+        <div class="blk"><h4>Livraison</h4><div class="kv"><span>Date</span><span class="mono">25/10/2026</span></div><div class="kv"><span>Créé par</span><span>diane</span></div><div class="kv"><span>Validé par</span><span style="color:var(--muted)">—</span></div></div>
+        <div class="blk"><h4>Actions</h4>
+          <div class="stack">
+            <div class="hint">ⓘ <span>La validation est réservée au responsable logistique. Passez sur <b>eric</b> pour valider.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ MATRICE ============================ -->
+<h2 class="sec">Boutons d'action selon statut × rôle</h2>
+<p class="secsub">Ce que le bloc « Actions » affiche. L'API reste l'arbitre (403 / 409 si on force).</p>
+<table class="mx">
+  <tr><th style="width:130px">Statut</th><th>diane · Répartitrice</th><th>eric · Resp. logistique</th></tr>
+  <tr><td><span class="tag draft">Brouillon</span></td>
+    <td><span class="btn sm">+ Ajouter des commandes</span><span class="btn danger sm">Retirer</span><div class="note">ⓘ Validation réservée au responsable logistique</div></td>
+    <td><span class="btn sm">+ Ajouter des commandes</span><span class="btn danger sm">Retirer</span><span class="btn pri sm">✓ Valider l'ordre</span><div class="note">Ordre vide : « Valider » désactivé · « Ajoutez au moins une commande »</div></td></tr>
+  <tr><td><span class="tag valid">Validé</span></td>
+    <td><span class="btn pri sm">🚚 Marquer parti</span><div class="note">Ordre verrouillé : plus d'ajout ni de retrait</div></td>
+    <td><span class="btn pri sm">🚚 Marquer parti</span><div class="note">Validé par eric</div></td></tr>
+  <tr><td><span class="tag gone">Parti</span></td>
+    <td colspan="2"><div class="note">Aucune action · lecture seule · commandes « En livraison »</div></td></tr>
+</table>
+
+<!-- ============================ ÉTATS ============================ -->
+<h2 class="sec">États : chargement, vide, erreur, refus de l'API</h2>
+<p class="secsub">Chaque écran les gère ; les messages viennent des codes d'erreur de l'API, traduits FR/EN.</p>
+<div class="states">
+  <div class="sc"><h5>Chargement</h5><div class="sk" style="width:90%"></div><div class="sk" style="width:75%"></div><div class="sk" style="width:85%"></div><div class="sk" style="width:60%"></div><div class="sk" style="width:80%"></div></div>
+  <div class="sc"><h5>Liste vide</h5><div class="empty"><div class="ic">📦</div><b>Aucune commande à planifier à Kribi</b>Tout est déjà affecté.<div style="margin-top:10px"><span class="btn sm">Toutes les villes</span></div></div></div>
+  <div class="sc"><h5>Erreur de chargement</h5><div class="alert err"><b>Impossible de charger les ordres</b>Le serveur ne répond pas.<div style="margin-top:8px"><span class="btn sm">↻ Réessayer</span></div></div></div>
+  <div class="sc"><h5>Refus métier (409 / 412)</h5>
+    <div class="alert err" style="margin-bottom:8px"><b>Capacité dépassée</b>TO-0003 : 695,50 kg de trop. <code>CAPACITY_EXCEEDED</code></div>
+    <div class="alert warn"><b>Ordre modifié entre-temps</b>Rechargez avant de continuer. <span class="btn sm" style="margin-top:6px">↻ Recharger</span></div></div>
+</div>
+
+<p style="margin-top:22px;color:var(--muted);font-size:12px">Notes : polices auto-hébergées dans l'app (<code>@fontsource</code>, pas de CDN) · dates affichées en jj/mm/aaaa, échangées en AAAA-MM-JJ · jauge ambre au-delà de 85 %.</p>
+
+</div>
+</body>
+</html>

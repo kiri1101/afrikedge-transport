@@ -43,4 +43,6 @@ Le détail est tenu dans [`docs/time-log.md`](docs/time-log.md). La conception e
 ## Documentation
 
 - [Analyse du sujet](docs/00-analyse-du-sujet.md)
+- [Spécification](docs/01-specification.md)
+- Maquettes : [bureau](docs/wireframes/01-ecrans-bureau.html) · [tablette et mobile](docs/wireframes/02-responsive.html)
 - [Journal de temps](docs/time-log.md)

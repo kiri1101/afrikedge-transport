@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquettes responsive</title>
+<style>body{margin:0;padding:24px;background:#fff;font-family:system-ui,sans-serif;color:#0f172a}.subtitle{color:#5f6f86;margin-top:0}h2{font-size:22px}</style>
+</head>
+<body>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  .rs { --ink:#0f1b2d; --ink2:#1c2b43; --bg:#f3f5f8; --line:#e1e6ed; --line2:#eef1f5; --muted:#5f6f86; --text:#0f172a;
+        --teal:#0f766e; --teal2:#14b8a6; --tealsoft:#e6f6f4; --amber:#b45309; --ambersoft:#fdf3dc; --red:#c81e1e;
+        --bluesoft:#e3ebfd; --blue:#1d4ed8; --greensoft:#ddf3ea; --green:#047857; --slatesoft:#e8edf3;
+        font-family:'IBM Plex Sans',system-ui,sans-serif; color:var(--text); font-size:12px; line-height:1.4; }
+  .rs * { box-sizing:border-box; }
+  .rs .mono { font-family:'IBM Plex Mono',monospace; font-variant-numeric:tabular-nums; }
+  .rs h3.sec { font-size:15px; margin:22px 0 4px; } .rs p.sub2 { margin:0 0 12px; color:var(--muted); }
+  .rs .bp { width:100%; max-width:1180px; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .rs .bp th, .rs .bp td { padding:8px 10px; border-bottom:1px solid var(--line2); text-align:left; vertical-align:top; }
+  .rs .bp th { background:#fafbfc; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+  .rs .bp td:first-child { font-weight:600; white-space:nowrap; }
+  .rs .devices { display:flex; flex-wrap:wrap; gap:18px; align-items:flex-start; }
+  .rs .dev { border:10px solid #1b2433; border-radius:26px; background:var(--bg); overflow:hidden; position:relative; box-shadow:0 12px 30px rgba(15,27,45,.18); }
+  .rs .dev.phone { width:300px; height:620px; } .rs .dev.tab { width:620px; height:620px; border-radius:20px; }
+  .rs .cap { font-size:11px; color:var(--muted); text-align:center; margin-top:6px; font-weight:600; }
+  .rs .hdr { display:flex; align-items:center; gap:10px; height:44px; padding:0 12px; background:var(--ink); color:#dbe4f0; }
+  .rs .mark { width:22px; height:22px; border-radius:6px; background:linear-gradient(135deg,var(--teal2),var(--teal)); display:grid; place-items:center; color:#fff; font-size:11px; }
+  .rs .hdr b { color:#fff; } .rs .hdr .r { margin-left:auto; display:flex; gap:8px; align-items:center; }
+  .rs .av { width:24px; height:24px; border-radius:50%; display:grid; place-items:center; font-weight:700; font-size:11px; color:var(--ink); background:#fcd34d; }
+  .rs .av.e { background:#a5b4fc; }
+  .rs .navt a { color:#a9b8cc; margin-right:12px; font-weight:500; } .rs .navt a.on { color:#fff; box-shadow:inset 0 -2px 0 var(--teal2); padding-bottom:12px; }
+  .rs .pill { border:1px solid #33445f; border-radius:999px; padding:2px 8px 2px 2px; display:flex; gap:6px; align-items:center; background:var(--ink2); }
+  .rs .body { padding:12px; }
+  .rs h1 { font-size:16px; margin:0 0 2px; } .rs .muted { color:var(--muted); }
+  .rs .ctl { display:inline-flex; align-items:center; gap:6px; height:34px; padding:0 10px; border:1px solid var(--line); border-radius:7px; background:#fff; }
+  .rs .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:36px; padding:0 12px; border-radius:8px; border:1px solid var(--line); background:#fff; font-weight:600; white-space:nowrap; }
+  .rs .btn.pri { background:var(--teal); border-color:var(--teal); color:#fff; } .rs .btn.full { width:100%; height:44px; }
+  .rs .btn.danger { color:var(--red); border-color:#f3c2c2; }
+  .rs .card { background:#fff; border:1px solid var(--line); border-radius:10px; }
+  .rs .so { display:flex; gap:10px; align-items:center; padding:10px; border:1px solid var(--line); border-radius:10px; background:#fff; margin-bottom:7px; min-height:56px; }
+  .rs .so.sel { border-color:var(--teal); background:#f0faf8; box-shadow:inset 3px 0 0 var(--teal); }
+  .rs .cb { width:20px; height:20px; border:1.5px solid #9aa8bb; border-radius:5px; display:grid; place-items:center; color:#fff; font-size:12px; flex:none; }
+  .rs .cb.on { background:var(--teal); border-color:var(--teal); }
+  .rs .so .w { margin-left:auto; text-align:right; } .rs .so small { display:block; color:var(--muted); }
+  .rs .selbar { position:absolute; left:0; right:0; bottom:52px; padding:10px 12px; background:var(--ink); color:#dbe4f0; display:flex; align-items:center; gap:10px; }
+  .rs .selbar b { color:#fff; } .rs .selbar .k { color:#5eead4; }
+  .rs .tabbar { position:absolute; left:0; right:0; bottom:0; height:52px; background:#fff; border-top:1px solid var(--line); display:flex; }
+  .rs .tabbar span { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:10px; color:var(--muted); gap:2px; }
+  .rs .tabbar span.on { color:var(--teal); font-weight:700; } .rs .tabbar i { font-style:normal; font-size:16px; }
+  .rs .plate { display:inline-flex; align-items:stretch; border:1.5px solid #1f2937; border-radius:4px; background:#fff; overflow:hidden; font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:10px; line-height:1; vertical-align:middle; }
+  .rs .plate::before { content:''; width:3px; background:linear-gradient(#007a5e 0 33.3%,#ce1126 33.3% 66.6%,#fcd116 66.6%); }
+  .rs .plate span { padding:3px 5px; letter-spacing:.5px; }
+  .rs .tag { display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; padding:2px 8px; border-radius:999px; }
+  .rs .tag::before { content:''; width:5px; height:5px; border-radius:50%; background:currentColor; }
+  .rs .tag.draft { background:var(--slatesoft); color:#334155; } .rs .tag.valid { background:var(--bluesoft); color:var(--blue); } .rs .tag.gone { background:var(--greensoft); color:var(--green); }
+  .rs .load { display:flex; height:10px; border-radius:5px; overflow:hidden; background:repeating-linear-gradient(-45deg,#eef1f5 0 5px,#e4e9ef 5px 10px); }
+  .rs .load.big { height:18px; border-radius:6px; }
+  .rs .load i { display:block; height:100%; border-right:2px solid #fff; }
+  .rs .load i.a { background:var(--teal); } .rs .load i.b { background:#11998c; } .rs .load i.w1 { background:#d97706; } .rs .load i.w2 { background:#f59e0b; }
+  .rs .load i.proj { background:repeating-linear-gradient(45deg,var(--teal2) 0 5px,#99f6e4 5px 10px); }
+  .rs .load i.over { background:repeating-linear-gradient(45deg,#ef4444 0 5px,#fecaca 5px 10px); }
+  .rs .seg { display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; } .rs .seg span { flex:1; text-align:center; padding:8px 4px; font-weight:600; color:var(--muted); }
+  .rs .seg span.on { background:var(--tealsoft); color:var(--teal); }
+  .rs .chips { display:flex; gap:6px; overflow:hidden; white-space:nowrap; } .rs .chips span { border:1px solid var(--line); border-radius:999px; padding:5px 11px; background:#fff; font-weight:500; }
+  .rs .chips span.on { background:var(--tealsoft); border-color:#a7e3dc; color:var(--teal); font-weight:700; }
+  .rs .to { padding:10px; border:1px solid var(--line); border-radius:10px; background:#fff; margin-bottom:8px; }
+  .rs .row { display:flex; align-items:center; gap:8px; }
+  .rs .opt { border:1.5px solid var(--line); border-radius:10px; padding:10px; margin-bottom:8px; background:#fff; }
+  .rs .opt.pick { border-color:var(--teal); box-shadow:0 0 0 3px var(--tealsoft); } .rs .opt.no { background:#fbfbfc; }
+  .rs .ok { color:var(--green); font-weight:700; } .rs .ko { color:var(--red); font-weight:700; }
+  .rs .sheet-h { display:flex; align-items:center; gap:8px; padding:12px; border-bottom:1px solid var(--line); background:#fff; }
+  .rs .actbar { position:absolute; left:0; right:0; bottom:0; padding:10px 12px; background:#fff; border-top:1px solid var(--line); display:flex; gap:8px; }
+  .rs .dots { display:flex; align-items:center; gap:6px; font-size:11px; }
+  .rs .dots i { width:9px; height:9px; border-radius:50%; background:#c5cfdb; display:inline-block; } .rs .dots i.on { background:var(--teal); box-shadow:0 0 0 3px var(--tealsoft); }
+  .rs .dots .ln { width:18px; height:2px; background:#c5cfdb; }
+  .rs .t { width:100%; border-collapse:collapse; background:#fff; } .rs .t th { font-size:10px; text-transform:uppercase; color:var(--muted); text-align:left; padding:7px 9px; border-bottom:1px solid var(--line); background:#fafbfc; }
+  .rs .t td { padding:8px 9px; border-bottom:1px solid var(--line2); } .rs .t .num { text-align:right; } .rs .t tr.sel td { background:#f0faf8; }
+  .rs .t td small { display:block; color:var(--muted); font-size:10px; }
+  .rs .hint { padding:8px 9px; border-radius:8px; background:var(--bluesoft); color:#1e3a8a; font-size:11px; }
+  .rs .badge { font-weight:700; color:var(--amber); background:var(--ambersoft); padding:2px 8px; border-radius:999px; font-size:11px; }
+</style>
+
+<div class="rs">
+<h2 style="margin:0 0 2px">Responsive · tablette et mobile</h2>
+<p class="subtitle">Même direction « Poste de répartition ». Points de rupture Tailwind par défaut ; le contenu ne déborde jamais horizontalement.</p>
+
+<table class="bp">
+  <tr><th>Élément</th><th>Mobile &lt; 640 px</th><th>Tablette 640–1023 px</th><th>Bureau ≥ 1024 px</th></tr>
+  <tr><td>En-tête</td><td>Logo + avatar ; l'avatar ouvre un menu (changer d'utilisateur, FR/EN). Navigation en barre d'onglets en bas</td><td>Navigation dans l'en-tête ; sélecteur réduit à l'avatar + prénom</td><td>Complet (maquette v2)</td></tr>
+  <tr><td>Commandes à planifier</td><td>Cartes cochables (zone de clic 56 px) ; barre de sélection collée au-dessus des onglets ; pagination « ‹ 1/2 › »</td><td>Tableau 3 colonnes (ville sous le client)</td><td>Tableau complet</td></tr>
+  <tr><td>Dialogue « Ajouter »</td><td>Plein écran ; bascule « Ordre existant | Nouvel ordre » ; bouton d'action collé en bas</td><td>90 % de la largeur ; les deux colonnes empilées</td><td>Deux colonnes côte à côte</td></tr>
+  <tr><td>Ordres de transport</td><td>Cartes (n°, statut, date, plaque, mini-jauge) ; filtre statut en puces défilantes ; date dans « Filtres »</td><td>Tableau sans « Créé par » ni « Cmd. »</td><td>Tableau complet</td></tr>
+  <tr><td>Détail d'un ordre</td><td>Une colonne ; étapes en points ; lignes en cartes ; actions collées en bas</td><td>Une colonne : jauge, puis bloc infos + actions, puis lignes</td><td>Deux colonnes (maquette v2)</td></tr>
+  <tr><td>Commun</td><td colspan="3">Cibles tactiles ≥ 44 px sur mobile · tableau ou cartes choisis par un composable <code>useBreakpoint()</code> (un seul des deux est monté) · dialogue PrimeVue avec <code>breakpoints</code></td></tr>
+</table>
+
+<h3 class="sec">Mobile (375 px)</h3>
+<p class="sub2">diane sélectionne, ajoute, puis eric valide.</p>
+<div class="devices">
+
+  <div><div class="dev phone">
+    <div class="hdr"><div class="mark">▤</div><b>Transports</b><div class="r"><span class="av">D</span></div></div>
+    <div class="body">
+      <h1>Commandes à planifier</h1><div class="muted" style="margin-bottom:8px">11 à Douala</div>
+      <div class="ctl" style="width:100%;margin-bottom:10px"><span class="muted">Ville</span> Douala <span style="margin-left:auto" class="muted">▾</span></div>
+      <div class="so sel"><span class="cb on">✓</span><div><b class="mono">SO-1008</b><small>Quincaillerie Ndokoti</small></div><div class="w mono"><b>430,00</b><small>kg</small></div></div>
+      <div class="so sel"><span class="cb on">✓</span><div><b class="mono">SO-1011</b><small>Librairie des Écoles</small></div><div class="w mono"><b>260,00</b><small>kg</small></div></div>
+      <div class="so sel"><span class="cb on">✓</span><div><b class="mono">SO-1013</b><small>Clinique Bonamoussadi</small></div><div class="w mono"><b>145,50</b><small>kg</small></div></div>
+      <div class="so"><span class="cb"></span><div><b class="mono">SO-1014</b><small>Supermarché Akwa Centre</small></div><div class="w mono"><b>1 980,00</b><small>kg</small></div></div>
+      <div class="row muted" style="justify-content:center;gap:14px"><span>‹</span><span class="mono">1 / 2</span><span>›</span></div>
+    </div>
+    <div class="selbar"><div><b>3 sélectionnées</b><div class="k mono">835,50 kg</div></div><span class="btn pri" style="margin-left:auto">Ajouter →</span></div>
+    <div class="tabbar"><span class="on"><i>☰</i>Commandes</span><span><i>🚚</i>Ordres</span></div>
+  </div><div class="cap">1 · Liste en cartes</div></div>
+
+  <div><div class="dev phone">
+    <div class="sheet-h"><span style="font-size:16px">✕</span><b>Ajouter 3 commandes</b><span class="mono" style="margin-left:auto;color:var(--teal);font-weight:700">835,50 kg</span></div>
+    <div class="body" style="background:#fbfcfd;height:100%">
+      <div class="seg" style="margin-bottom:12px"><span class="on">Ordre existant</span><span>Nouvel ordre</span></div>
+      <div class="opt pick">
+        <div class="row" style="margin-bottom:6px"><b class="mono">TO-0004</b><span class="plate"><span>LT-905-GH</span></span><span class="ok" style="margin-left:auto">✓</span></div>
+        <div class="muted" style="margin-bottom:6px">26/10/2026</div>
+        <div class="load"><i class="proj" style="width:16.7%"></i></div>
+        <div class="row muted mono" style="margin-top:5px"><span>835,50 / 5 000 kg</span><span style="margin-left:auto">17 %</span></div>
+      </div>
+      <div class="opt no">
+        <div class="row" style="margin-bottom:6px"><b class="mono">TO-0003</b><span class="plate"><span>LT-482-AB</span></span><span class="ko" style="margin-left:auto">✕</span></div>
+        <div class="muted" style="margin-bottom:6px">25/10/2026</div>
+        <div class="load"><i class="a" style="width:42.7%"></i><i class="b" style="width:48%"></i><i class="over" style="width:9.3%"></i></div>
+        <div class="ko" style="margin-top:5px;font-size:11px">Dépasse de 695,50 kg</div>
+      </div>
+    </div>
+    <div class="actbar"><span class="btn pri full">Ajouter à TO-0004</span></div>
+  </div><div class="cap">2 · Dialogue plein écran</div></div>
+
+  <div><div class="dev phone">
+    <div class="hdr"><div class="mark">▤</div><b>Transports</b><div class="r"><span class="av e">E</span></div></div>
+    <div class="body">
+      <div class="row" style="margin-bottom:8px"><h1>Ordres de transport</h1><span class="btn pri" style="margin-left:auto;height:32px;width:32px;padding:0">+</span></div>
+      <div class="chips" style="margin-bottom:6px"><span class="on">Tous</span><span>Brouillon</span><span>Validé</span><span>Parti</span></div>
+      <div style="margin-bottom:10px"><span class="ctl" style="height:30px">⚙ Filtres · date</span></div>
+      <div class="to"><div class="row"><b class="mono">TO-0004</b><span class="tag draft">Brouillon</span><span class="mono muted" style="margin-left:auto">26/10</span></div>
+        <div class="row" style="margin:7px 0"><span class="plate"><span>LT-905-GH</span></span><span class="muted">0 commande</span></div>
+        <div class="row"><div class="load" style="flex:1"></div><span class="mono" style="width:34px;text-align:right">0 %</span></div></div>
+      <div class="to"><div class="row"><b class="mono">TO-0003</b><span class="tag draft">Brouillon</span><span class="mono muted" style="margin-left:auto">25/10</span></div>
+        <div class="row" style="margin:7px 0"><span class="plate"><span>LT-482-AB</span></span><span class="muted">2 commandes</span></div>
+        <div class="row"><div class="load" style="flex:1"><i class="w1" style="width:42.7%"></i><i class="w2" style="width:48%"></i></div><span class="mono" style="width:34px;text-align:right;color:var(--amber)">91 %</span></div></div>
+      <div class="to"><div class="row"><b class="mono">TO-0002</b><span class="tag valid">Validé</span><span class="mono muted" style="margin-left:auto">25/10</span></div>
+        <div class="row" style="margin:7px 0"><span class="plate"><span>CE-731-EF</span></span><span class="muted">3 commandes</span></div>
+        <div class="row"><div class="load" style="flex:1"><i class="w1" style="width:31.4%"></i><i class="w2" style="width:27.1%"></i><i class="w1" style="width:37.1%"></i></div><span class="mono" style="width:34px;text-align:right;color:var(--amber)">96 %</span></div></div>
+    </div>
+    <div class="tabbar"><span><i>☰</i>Commandes</span><span class="on"><i>🚚</i>Ordres</span></div>
+  </div><div class="cap">3 · Ordres en cartes</div></div>
+
+  <div><div class="dev phone">
+    <div class="hdr"><span>←</span><b class="mono">TO-0003</b><div class="r"><span class="av e">E</span></div></div>
+    <div class="body">
+      <div class="row" style="margin-bottom:10px"><span class="tag draft">Brouillon</span><div class="dots" style="margin-left:auto"><i class="on"></i><span class="ln"></span><i></i><span class="ln"></span><i></i></div></div>
+      <div class="card" style="padding:12px;margin-bottom:10px">
+        <div class="row" style="margin-bottom:8px"><b class="mono" style="font-size:18px">1 360,00</b><span class="muted mono">/ 1 500 kg</span></div>
+        <div class="load big"><i class="w1" style="width:42.7%"></i><i class="w2" style="width:48%"></i></div>
+        <div class="row" style="margin-top:8px"><span class="badge">91 % · 140 kg libres</span></div>
+        <div class="row muted" style="margin-top:10px;gap:10px"><span class="plate"><span>LT-482-AB</span></span><span class="mono">25/10/2026</span><span>· diane</span></div>
+      </div>
+      <div class="row" style="margin-bottom:6px"><b>Commandes · 2</b><span class="muted" style="margin-left:auto">+ Ajouter</span></div>
+      <div class="so"><div><b class="mono">SO-1006</b><small>Agro Distribution Ouest · Bafoussam</small></div><div class="w"><b class="mono">640</b><small class="mono">kg</small></div><span class="btn danger" style="height:32px;padding:0 8px">✕</span></div>
+      <div class="so"><div><b class="mono">SO-1007</b><small>Café Mont Bamboutos · Bafoussam</small></div><div class="w"><b class="mono">720</b><small class="mono">kg</small></div><span class="btn danger" style="height:32px;padding:0 8px">✕</span></div>
+    </div>
+    <div class="actbar"><span class="btn pri full">✓ Valider l'ordre</span></div>
+  </div><div class="cap">4 · Détail (eric) · action collée en bas</div></div>
+
+</div>
+
+<h3 class="sec">Tablette (768 px)</h3>
+<p class="sub2">Navigation dans l'en-tête ; tableau allégé ; détail sur une colonne.</p>
+<div class="devices">
+  <div><div class="dev tab">
+    <div class="hdr"><div class="mark">▤</div><b>Transports</b><span class="navt" style="margin-left:14px"><a class="on">Commandes</a><a>Ordres</a></span>
+      <div class="r"><span style="font-size:10px;font-weight:700">FR</span><span class="pill"><span class="av">D</span>diane</span></div></div>
+    <div class="body">
+      <h1>Commandes à planifier</h1><div class="muted" style="margin-bottom:8px">11 à Douala</div>
+      <div class="card">
+        <div style="padding:8px"><span class="ctl"><span class="muted">Ville</span> Douala ▾</span></div>
+        <table class="t">
+          <tr><th style="width:30px"></th><th>N°</th><th>Client</th><th class="num">Poids</th></tr>
+          <tr class="sel"><td><span class="cb on">✓</span></td><td class="mono">SO-1008</td><td>Quincaillerie Ndokoti<small>C0001 · Douala</small></td><td class="num mono">430,00 kg</td></tr>
+          <tr class="sel"><td><span class="cb on">✓</span></td><td class="mono">SO-1011</td><td>Librairie des Écoles<small>C0010 · Douala</small></td><td class="num mono">260,00 kg</td></tr>
+          <tr class="sel"><td><span class="cb on">✓</span></td><td class="mono">SO-1013</td><td>Clinique Bonamoussadi<small>C0012 · Douala</small></td><td class="num mono">145,50 kg</td></tr>
+          <tr><td><span class="cb"></span></td><td class="mono">SO-1014</td><td>Supermarché Akwa Centre<small>C0002 · Douala</small></td><td class="num mono">1 980,00 kg</td></tr>
+          <tr><td><span class="cb"></span></td><td class="mono">SO-1017</td><td>Restaurant Le Wouri<small>C0014 · Douala</small></td><td class="num mono">95,00 kg</td></tr>
+        </table>
+        <div class="row muted" style="padding:8px;justify-content:flex-end;gap:10px"><span>1–10 sur 11</span><span>‹ <b style="color:var(--teal)">1</b> 2 ›</span></div>
+      </div>
+    </div>
+    <div class="selbar" style="bottom:0"><b>3 sélectionnées</b><span class="k mono">835,50 kg</span><span class="btn pri" style="margin-left:auto">Ajouter à un transport →</span></div>
+  </div><div class="cap">Commandes à planifier</div></div>
+
+  <div><div class="dev tab" style="width:440px">
+    <div class="hdr"><div class="mark">▤</div><b>Transports</b><span class="navt" style="margin-left:14px"><a>Commandes</a><a class="on">Ordres</a></span>
+      <div class="r"><span class="pill"><span class="av">D</span>diane</span></div></div>
+    <div class="body">
+      <div class="muted" style="margin-bottom:4px">← Ordres de transport</div>
+      <div class="row" style="margin-bottom:10px"><h1 class="mono">TO-0003</h1><span class="tag draft">Brouillon</span><div class="dots" style="margin-left:auto"><i class="on"></i><span class="ln"></span><i></i><span class="ln"></span><i></i></div></div>
+      <div class="card" style="padding:12px;margin-bottom:10px">
+        <div class="row" style="margin-bottom:8px"><b class="mono" style="font-size:20px">1 360,00</b><span class="muted mono">/ 1 500,00 kg</span><span class="badge" style="margin-left:auto">91 %</span></div>
+        <div class="load big"><i class="w1" style="width:42.7%"></i><i class="w2" style="width:48%"></i></div>
+      </div>
+      <div class="card" style="padding:10px;margin-bottom:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div class="muted" style="font-size:10px;text-transform:uppercase">Véhicule</div><span class="plate"><span>LT-482-AB</span></span> <span class="muted mono">VH-01</span><div class="muted mono" style="margin-top:4px">25/10/2026 · diane</div></div>
+        <div class="hint">ⓘ Validation réservée au responsable logistique.</div>
+      </div>
+      <div class="card">
+        <table class="t"><tr><th>N°</th><th>Client</th><th class="num">Poids</th><th></th></tr>
+          <tr><td class="mono">SO-1006</td><td>Agro Distribution Ouest<small>Bafoussam</small></td><td class="num mono">640,00</td><td class="num"><span class="btn danger" style="height:28px">Retirer</span></td></tr>
+          <tr><td class="mono">SO-1007</td><td>Café Mont Bamboutos<small>Bafoussam</small></td><td class="num mono">720,00</td><td class="num"><span class="btn danger" style="height:28px">Retirer</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div><div class="cap">Détail (portrait)</div></div>
+</div>
+</div>
+</body>
+</html>
