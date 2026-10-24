@@ -74,19 +74,19 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 - ✅ En-tête : navigation, sélecteur d'utilisateur, langue ; barre d'onglets mobile
 - ✅ Tests (12) : dates, poids, client HTTP ; vérifié dans le navigateur (couche PrimeVue, aucune bannière de licence, mobile sans défilement horizontal)
 
-### ✅ 8. Composants d'interface
+### ✅ 8. Composants d'interface — `39a130f`
 - ✅ Plaque d'immatriculation, étiquette de statut, étapes du cycle de vie
 - ✅ Jauge de chargement segmentée (projection, dépassement)
 - ✅ États chargement / vide / erreur
 - ✅ Tests de la jauge (4) : largeurs exactes, seuil 85 %, projection, dépassement
 
-### 🔄 9. Écran Commandes à planifier
-- ⬜ Filtre ville, pagination serveur
-- ⬜ Sélection conservée entre les pages, barre de sélection
-- ⬜ Tableau (bureau, tablette) / cartes (mobile)
-- ⬜ Tests du store
+### ✅ 9. Écran Commandes à planifier
+- ✅ Filtre ville, pagination serveur
+- ✅ Sélection conservée entre les pages, barre de sélection
+- ✅ Tableau (bureau, tablette) / cartes (mobile)
+- ✅ Tests du store (5) ; vérifié dans le navigateur à 1280 et 375 px avec les données réelles
 
-### ⬜ 10. Dialogue « Ajouter à un transport »
+### 🔄 10. Dialogue « Ajouter à un transport »
 - ⬜ Ordres brouillon avec jauge projetée (ceux où la sélection ne tient pas grisés)
 - ⬜ Nouvel ordre : date puis véhicules disponibles
 - ⬜ Gestion du 412, bouton désactivé pendant l'envoi
