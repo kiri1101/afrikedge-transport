@@ -44,7 +44,7 @@ Le détail est tenu dans [`docs/time-log.md`](docs/time-log.md). La conception e
 
 - [Analyse du sujet](docs/00-analyse-du-sujet.md)
 - [Spécification](docs/01-specification.md)
-- [Plan d'implémentation](docs/02-plan.md)
+- [Plan d'implémentation](docs/02-plan.md) · [Backlog](BACKLOG.md) (avancement tâche par tâche)
 - [Décisions d'architecture (ADR)](docs/adr/README.md)
 - [Diagrammes](docs/diagrams.md) : cycles de vie, séquence d'ajout concurrent, modèle de données, classes
 - Maquettes : [bureau](docs/wireframes/01-ecrans-bureau.html) · [tablette et mobile](docs/wireframes/02-responsive.html)
