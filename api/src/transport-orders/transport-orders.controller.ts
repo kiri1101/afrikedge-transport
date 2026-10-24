@@ -115,4 +115,32 @@ export class TransportOrdersController {
       await this.service.removeLine(no, version, normalized, user),
     );
   }
+
+  /** Draft → Validated: LOGISTICS_MANAGER only, at least one sales order. */
+  @Post(':no/validate')
+  @HttpCode(200)
+  @RequireAction('VALIDATE')
+  @ApiHeader(IF_MATCH)
+  async validate(
+    @Param('no') no: string,
+    @IfMatchVersion() version: string,
+    @CurrentUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<TransportOrderDetailDto> {
+    return withETag(res, await this.service.validate(no, version, user));
+  }
+
+  /** Validated → Departed: its sales orders become "in delivery". */
+  @Post(':no/depart')
+  @HttpCode(200)
+  @RequireAction('DEPART')
+  @ApiHeader(IF_MATCH)
+  async depart(
+    @Param('no') no: string,
+    @IfMatchVersion() version: string,
+    @CurrentUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<TransportOrderDetailDto> {
+    return withETag(res, await this.service.depart(no, version, user));
+  }
 }

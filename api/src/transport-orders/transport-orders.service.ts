@@ -8,7 +8,9 @@ import { nextTransportOrderNo } from '../domain/order-number';
 import {
   allowedActions,
   assertCanAddLines,
+  assertCanDepart,
   assertCanRemoveLine,
+  assertCanValidate,
   assertDeliveryDateNotPast,
   assertVehicleFree,
   assertVehicleUsable,
@@ -140,6 +142,43 @@ export class TransportOrdersService {
         'TO_PLAN',
         'PLANNED',
       );
+      return this.getDetail(order.no, user, tx);
+    });
+  }
+
+  /** R8 — the role was checked by the action guard. */
+  async validate(
+    no: string,
+    version: string,
+    user: CurrentUser,
+  ): Promise<TransportOrderDetailDto> {
+    return this.sql.transaction(async (tx) => {
+      const order = await this.lockOrFail(tx, no, version);
+      assertCanValidate(order);
+      await this.orders.markValidated(tx, order.no, user.id);
+      return this.getDetail(order.no, user, tx);
+    });
+  }
+
+  /** R9 — the order leaves; its sales orders go "in delivery". */
+  async depart(
+    no: string,
+    version: string,
+    user: CurrentUser,
+  ): Promise<TransportOrderDetailDto> {
+    return this.sql.transaction(async (tx) => {
+      const order = await this.lockOrFail(tx, no, version);
+      assertCanDepart(order);
+      await this.orders.markDeparted(tx, order.no);
+      const salesOrderNos = await this.orders.lineNos(tx, order.no);
+      if (salesOrderNos.length > 0) {
+        await this.salesOrders.setStatus(
+          tx,
+          salesOrderNos,
+          'IN_DELIVERY',
+          'PLANNED',
+        );
+      }
       return this.getDetail(order.no, user, tx);
     });
   }

@@ -46,19 +46,19 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 - ✅ `POST /transport-orders` sous verrou véhicule + numéro
 - ✅ Tests e2e (7) : création, numérotation, véhicule inactif/inconnu, date passée, véhicule déjà pris, date impossible
 
-### ✅ 5. Ajout et retrait de commandes (R3 à R7)
+### ✅ 5. Ajout et retrait de commandes (R3 à R7) — `62dd876`
 - ✅ `If-Match` obligatoire (428 / 412), verrou d'en-tête
 - ✅ `POST /transport-orders/:no/lines`, `DELETE /transport-orders/:no/lines/:salesOrderNo`
 - ✅ Normalisation des numéros (majuscules, espaces)
 - ✅ Tests e2e (15) par règle, centimes exacts, limite de capacité
 - ✅ Tests de concurrence (2) : même ordre → 200 + 412 ; même commande dans deux ordres → 200 + 409
 
-### 🔄 6. Validation et départ (R8, R9)
-- ⬜ `POST /transport-orders/:no/validate` (LOGISTICS_MANAGER)
-- ⬜ `POST /transport-orders/:no/depart` (commandes → En livraison)
-- ⬜ Tests e2e du cycle de vie, vérification de Swagger
+### ✅ 6. Validation et départ (R8, R9)
+- ✅ `POST /transport-orders/:no/validate` (LOGISTICS_MANAGER)
+- ✅ `POST /transport-orders/:no/depart` (commandes → En livraison)
+- ✅ Tests e2e du cycle de vie (9), Swagger vérifié : 10 routes, `X-User-Id` et `If-Match` documentés
 
-### ⬜ 6b. Journal d'audit (demande ajoutée pendant l'implémentation)
+### 🔄 6b. Journal d'audit (demande ajoutée pendant l'implémentation)
 - ⬜ Identifiant de requête (`X-Request-Id`) propagé jusqu'aux requêtes SQL
 - ⬜ Requêtes HTTP : méthode, chemin, utilisateur, corps des modifications ; réponses : statut, durée ; erreurs : code
 - ⬜ Activité SQL : lecture / écriture, début / validation / annulation de transaction, lignes touchées, durée

@@ -256,4 +256,37 @@ export class TransportOrdersRepository {
       },
     );
   }
+
+  async markValidated(
+    tx: SqlRunner,
+    no: string,
+    userId: string,
+  ): Promise<void> {
+    await tx.query(
+      `UPDATE [Transport Order] SET [Status] = @status, [Validated By] = @userId WHERE [No_] = @no`,
+      {
+        no: [sql.NVarChar(20), no],
+        userId: [sql.NVarChar(50), userId],
+        status: [sql.TinyInt, TRANSPORT_ORDER_STATUS_CODE.VALIDATED],
+      },
+    );
+  }
+
+  async markDeparted(tx: SqlRunner, no: string): Promise<void> {
+    await tx.query(
+      `UPDATE [Transport Order] SET [Status] = @status WHERE [No_] = @no`,
+      {
+        no: [sql.NVarChar(20), no],
+        status: [sql.TinyInt, TRANSPORT_ORDER_STATUS_CODE.DEPARTED],
+      },
+    );
+  }
+
+  async lineNos(tx: SqlRunner, no: string): Promise<string[]> {
+    const { rows } = await tx.query<{ no: string }>(
+      `SELECT [Sales Order No_] AS no FROM [Transport Order Line] WHERE [Transport Order No_] = @no`,
+      { no: [sql.NVarChar(20), no] },
+    );
+    return rows.map((row) => row.no);
+  }
 }
