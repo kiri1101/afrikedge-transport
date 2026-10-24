@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useBreakpoint } from '@/composables/useBreakpoint'
 import LangSwitch from './LangSwitch.vue'
 import UserSwitcher from './UserSwitcher.vue'
 
 const { t } = useI18n()
+const route = useRoute()
+// Sibling routes: /transport-orders/TO-0003 is not "active" for /transport-orders by Vue Router rules.
+const isActive = (to: string) => route.path === to || route.path.startsWith(`${to}/`)
 const { isMobile, isDesktop } = useBreakpoint()
 
 const links = [
@@ -33,7 +36,8 @@ const links = [
           :key="link.to"
           :to="link.to"
           class="flex items-center border-b-2 border-transparent px-3 font-medium hover:text-white"
-          active-class="!border-teal-400 text-white"
+          :class="{ '!border-teal-400 text-white': isActive(link.to) }"
+          :aria-current="isActive(link.to) ? 'page' : undefined"
         >
           {{ isDesktop ? t(link.label) : t(link.short) }}
         </RouterLink>

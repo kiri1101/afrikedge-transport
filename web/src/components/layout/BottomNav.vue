@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
+const route = useRoute()
+// Sibling routes: /transport-orders/TO-0003 is not "active" for /transport-orders by Vue Router rules.
+const isActive = (to: string) => route.path === to || route.path.startsWith(`${to}/`)
 
 const links = [
   { to: '/sales-orders', icon: 'pi-list', label: 'nav.salesShort' },
@@ -17,7 +20,8 @@ const links = [
       :key="link.to"
       :to="link.to"
       class="flex flex-1 flex-col items-center justify-center gap-1 text-xs text-muted"
-      active-class="!text-teal-700 font-bold"
+      :class="{ '!text-teal-700 font-bold': isActive(link.to) }"
+      :aria-current="isActive(link.to) ? 'page' : undefined"
     >
       <i class="pi text-lg" :class="link.icon" aria-hidden="true" />
       {{ t(link.label) }}

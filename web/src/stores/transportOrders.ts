@@ -1,9 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { fetchTransportOrders } from '@/api/transportOrders'
-import type { Page, TransportOrderStatus, TransportOrderSummary } from '@/api/types'
+import { ApiError } from '@/api/http'
+import { departOrder, fetchTransportOrder, fetchTransportOrders, removeLine as removeLineApi, validateOrder } from '@/api/transportOrders'
+import type { Page, TransportOrderDetail, TransportOrderStatus, TransportOrderSummary } from '@/api/types'
 
-/** The transport orders list and its filters; any filter change goes back to page 1. */
+/**
+ * The transport orders list (any filter change goes back to page 1) and the order on screen.
+ * Changes to that order always send the version it shows (If-Match).
+ */
 export const useTransportOrdersStore = defineStore('transportOrders', () => {
   const status = ref<TransportOrderStatus | null>(null)
   const deliveryDate = ref<string | null>(null)
@@ -48,6 +52,48 @@ export const useTransportOrdersStore = defineStore('transportOrders', () => {
     await load()
   }
 
+  // ---- order detail
+
+  const current = ref<TransportOrderDetail | null>(null)
+  const detailLoading = ref(false)
+  const detailError = ref<unknown>(null)
+  /** Set when a change hit a stale version: the order was reloaded and the user should look again. */
+  const staleNotice = ref(false)
+
+  async function loadDetail(no: string): Promise<void> {
+    detailLoading.value = true
+    detailError.value = null
+    try {
+      current.value = await fetchTransportOrder(no)
+    } catch (e) {
+      current.value = null
+      detailError.value = e
+    } finally {
+      detailLoading.value = false
+    }
+  }
+
+  /** Runs a change on the current order; on 412 reloads it and raises the notice, other errors propagate. */
+  async function change(action: (order: TransportOrderDetail) => Promise<TransportOrderDetail>): Promise<boolean> {
+    const order = current.value!
+    try {
+      current.value = await action(order)
+      staleNotice.value = false
+      return true
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 412) {
+        staleNotice.value = true
+        await loadDetail(order.no)
+        return false
+      }
+      throw e
+    }
+  }
+
+  const removeLine = (salesOrderNo: string) => change((o) => removeLineApi(o.no, o.version, salesOrderNo))
+  const validate = () => change((o) => validateOrder(o.no, o.version))
+  const depart = () => change((o) => departOrder(o.no, o.version))
+
   async function clearFilters(): Promise<void> {
     status.value = null
     deliveryDate.value = null
@@ -68,5 +114,13 @@ export const useTransportOrdersStore = defineStore('transportOrders', () => {
     setDeliveryDate,
     setPage,
     clearFilters,
+    current,
+    detailLoading,
+    detailError,
+    staleNotice,
+    loadDetail,
+    removeLine,
+    validate,
+    depart,
   }
 })

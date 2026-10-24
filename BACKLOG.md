@@ -93,21 +93,21 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 - ✅ Plein écran sur mobile
 - ✅ Tests des composants (5) ; parcours vérifié avec l'API : TO-0003 grisé « Dépasse de 695,50 kg », VH-01/VH-03 pris le 25/10, ajout à TO-0004 → toast + liste à 30
 
-### ✅ 11. Écran Ordres de transport
+### ✅ 11. Écran Ordres de transport — `178c7a6`
 - ✅ Filtres statut et date, pagination, mini-jauge
 - ✅ Création d'un ordre vide
 - ✅ Cartes sur mobile
 - ✅ Tests du store (2) ; vérifié avec l'API : tri, filtre Brouillon → 2, création TO-0005 → détail
 
-### 🔄 12. Écran Détail d'un ordre
-- ⬜ Jauge, étapes, véhicule, lignes
-- ⬜ Actions selon `allowedActions` avec explications
-- ⬜ Confirmations (retrait, validation, départ), gestion du 412
-- ⬜ Tests des actions
+### ✅ 12. Écran Détail d'un ordre
+- ✅ Jauge, étapes, véhicule, lignes
+- ✅ Actions selon `allowedActions` avec explications
+- ✅ Confirmations (retrait, validation, départ), gestion du 412
+- ✅ Tests (7) : boutons et explications par rôle/statut, version envoyée, 412 → rechargement + avis ; parcours vérifié avec l'API : retrait confirmé, bascule diane → eric, 412 provoqué depuis un « autre onglet », validation puis départ
 
 ## Clôture
 
-### ⬜ 13. README et vérification finale
+### 🔄 13. README et vérification finale
 - ⬜ Lancement, choix techniques, table de traçabilité R1 à R10
 - ⬜ Ce qui manque, temps passé
 - ⬜ Vérification complète depuis un clone propre
