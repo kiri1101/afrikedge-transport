@@ -14,3 +14,4 @@ Une décision par fichier. Statuts fixés à l'approbation de la [spécification
 | [0008](0008-class-validator.md) | Valider les entrées avec class-validator plutôt que Zod | Acceptée |
 | [0009](0009-pagination-offset.md) | Pagination par décalage avec total | Acceptée |
 | [0010](0010-primevue-tailwind-vite.md) | Front en SPA Vite avec PrimeVue et Tailwind | Acceptée |
+| [0011](0011-journal-audit.md) | Journal d'audit en JSON lines, corrélé par requête | Acceptée |

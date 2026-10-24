@@ -3,11 +3,18 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { configureApp } from '../../src/app.setup';
+import { AUDIT_SINKS, AuditSink } from '../../src/audit/audit-log';
 
-export async function createTestApp(): Promise<INestApplication> {
+/** The audit log has no sink under test unless one is passed (e.g. a MemorySink to assert on). */
+export async function createTestApp(
+  options: { auditSink?: AuditSink } = {},
+): Promise<INestApplication> {
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule],
-  }).compile();
+  })
+    .overrideProvider(AUDIT_SINKS)
+    .useValue(options.auditSink ? [options.auditSink] : [])
+    .compile();
   const app = moduleRef.createNestApplication({
     // E2E_LOG=1 shows server errors (500s) while debugging a test.
     logger: process.env.E2E_LOG ? ['error'] : false,

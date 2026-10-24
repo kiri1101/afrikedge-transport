@@ -53,17 +53,17 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 - ✅ Tests e2e (15) par règle, centimes exacts, limite de capacité
 - ✅ Tests de concurrence (2) : même ordre → 200 + 412 ; même commande dans deux ordres → 200 + 409
 
-### ✅ 6. Validation et départ (R8, R9)
+### ✅ 6. Validation et départ (R8, R9) — `5e2b0bb`
 - ✅ `POST /transport-orders/:no/validate` (LOGISTICS_MANAGER)
 - ✅ `POST /transport-orders/:no/depart` (commandes → En livraison)
 - ✅ Tests e2e du cycle de vie (9), Swagger vérifié : 10 routes, `X-User-Id` et `If-Match` documentés
 
-### 🔄 6b. Journal d'audit (demande ajoutée pendant l'implémentation)
-- ⬜ Identifiant de requête (`X-Request-Id`) propagé jusqu'aux requêtes SQL
-- ⬜ Requêtes HTTP : méthode, chemin, utilisateur, corps des modifications ; réponses : statut, durée ; erreurs : code
-- ⬜ Activité SQL : lecture / écriture, début / validation / annulation de transaction, lignes touchées, durée
-- ⬜ Fichier JSON lines + console, sans corps de réponse (données clients)
-- ⬜ Tests e2e du journal
+### ✅ 6b. Journal d'audit (demande ajoutée pendant l'implémentation)
+- ✅ Identifiant de requête (`X-Request-Id`) propagé jusqu'aux requêtes SQL
+- ✅ Requêtes HTTP : méthode, chemin, utilisateur, corps des modifications ; réponses : statut, durée ; erreurs : code
+- ✅ Activité SQL : lecture / écriture, début / validation / annulation de transaction, lignes touchées, durée
+- ✅ Fichier JSON lines + console, sans corps de réponse (données clients)
+- ✅ Tests : unitaires (5) et e2e (5) du journal ; ADR-0011
 
 ## Implémentation : front
 

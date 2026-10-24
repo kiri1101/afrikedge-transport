@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AuditLog } from './audit/audit-log';
 import { DomainError } from './common/domain-error';
 import { ProblemDetailsFilter } from './common/problem-details.filter';
 
@@ -33,11 +34,11 @@ export function configureApp(app: INestApplication): void {
         new DomainError('VALIDATION_FAILED', { errors: flatten(errors) }),
     }),
   );
-  app.useGlobalFilters(new ProblemDetailsFilter());
-  // ETag and Location must be exposed, or browser code cannot read them.
+  app.useGlobalFilters(new ProblemDetailsFilter(app.get(AuditLog)));
+  // ETag, Location and X-Request-Id must be exposed, or browser code cannot read them.
   app.enableCors({
     origin: config.get<string>('CORS_ORIGIN', 'http://localhost:5173'),
-    exposedHeaders: ['ETag', 'Location'],
+    exposedHeaders: ['ETag', 'Location', 'X-Request-Id'],
   });
 
   const document = SwaggerModule.createDocument(

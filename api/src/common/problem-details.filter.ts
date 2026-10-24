@@ -6,6 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { AuditLog } from '../audit/audit-log';
 import { DomainError } from './domain-error';
 import { ERROR_CATALOG } from './error-catalog';
 
@@ -24,8 +25,18 @@ export type ProblemDetails = {
 export class ProblemDetailsFilter implements ExceptionFilter {
   private readonly logger = new Logger(ProblemDetailsFilter.name);
 
+  constructor(private readonly audit: AuditLog) {}
+
   catch(exception: unknown, host: ArgumentsHost): void {
     const problem = this.toProblem(exception);
+    this.audit.record('http.error', {
+      status: problem.status,
+      code: problem.code,
+      detail: problem.detail,
+      ...(problem.status >= 500 && exception instanceof Error
+        ? { error: exception.message }
+        : {}),
+    });
     host
       .switchToHttp()
       .getResponse<Response>()
