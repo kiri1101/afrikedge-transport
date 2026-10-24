@@ -95,7 +95,7 @@ Le README reprendra ce tableau avec, pour chaque règle, le nom du test qui la p
 
 ### 7.1 Conventions
 
-- En-têtes : `X-User-Id` obligatoire sur toutes les routes (401 sinon) ; `If-Match: "<version>"` facultatif sur les mutations d'un ordre (412 si périmé) ; `ETag` renvoyé sur le détail et après chaque mutation.
+- En-têtes : `X-User-Id` obligatoire sur toutes les routes (401 sinon). `If-Match: "<version>"` **obligatoire** sur toute modification d'un ordre existant (lignes, validation, départ) : absent → 428, périmé → 412. La création n'en a pas besoin (rien n'existe encore). `ETag` renvoyé sur le détail et après chaque mutation.
 - Pagination : `page` (≥ 1, défaut 1), `pageSize` (1 à 100, défaut 20). Réponse `{ items, page, pageSize, total }`. Deux requêtes paramétrées (page + `COUNT(*)`) partageant le même `WHERE` ; chaque `ORDER BY` se termine par la clé primaire.
 - Validation des entrées : `class-validator` + `ValidationPipe` global (`whitelist`, `forbidNonWhitelisted`, `transform`).
 - Swagger sur `/docs` (`@nestjs/swagger`), en bonus.
@@ -125,11 +125,11 @@ type SalesOrder = { no: string; customerNo: string; customerName: string; delive
                     totalWeightKg: number; status: 'TO_PLAN' | 'PLANNED' | 'IN_DELIVERY' };
 type Vehicle = { code: string; plateNo: string; capacityKg: number; active: boolean };
 type TransportOrderSummary = {
-  no: string; status: 'DRAFT' | 'VALIDATED' | 'DEPARTED'; deliveryDate: string;
+  no: string; version: string; status: 'DRAFT' | 'VALIDATED' | 'DEPARTED'; deliveryDate: string;
   vehicleCode: string; plateNo: string; capacityKg: number;
   lineCount: number; totalWeightKg: number; createdBy: string; validatedBy: string | null };
 type TransportOrderDetail = TransportOrderSummary & {
-  version: string; remainingKg: number; lines: SalesOrder[];
+  remainingKg: number; lines: SalesOrder[];
   allowedActions: Array<'ADD_LINES' | 'REMOVE_LINES' | 'VALIDATE' | 'DEPART'> };
 ```
 
@@ -158,6 +158,7 @@ Toutes les erreurs suivent le format *problem details* (RFC 9457), `Content-Type
 | 404 | Ressource du chemin introuvable | `TRANSPORT_ORDER_NOT_FOUND`, `LINE_NOT_FOUND` |
 | 409 | Requête valide mais en conflit avec l'état actuel | `VEHICLE_ALREADY_BOOKED`, `SALES_ORDER_NOT_PLANNABLE`, `CAPACITY_EXCEEDED`, `ORDER_NOT_DRAFT`, `ORDER_EMPTY`, `INVALID_TRANSITION`, `CONCURRENT_UPDATE` (victime d'interblocage SQL 1205 ou délai de verrou dépassé : « réessayez ») |
 | 412 | Version de l'ordre périmée | `STALE_VERSION` |
+| 428 | `If-Match` absent sur une modification d'ordre | `VERSION_REQUIRED` (« Relisez l'ordre et renvoyez sa version dans If-Match ») |
 | 422 | Requête incorrecte en elle-même | `VEHICLE_UNKNOWN`, `VEHICLE_INACTIVE`, `DELIVERY_DATE_IN_PAST`, `SALES_ORDER_UNKNOWN` |
 | 500 | Imprévu (journalisé, message générique) | `INTERNAL_ERROR` |
 
@@ -183,8 +184,10 @@ Première instruction de la transaction, qui sert à la fois de **verrou** et de
 
 ```sql
 UPDATE [Transport Order] SET [Status] = [Status]
-WHERE [No_] = @no AND (@version IS NULL OR [timestamp] = @version);
+WHERE [No_] = @no AND [timestamp] = @version;
 ```
+
+(`@version` vient de `If-Match`, contrôlé avant la transaction : absent → 428.)
 
 - 0 ligne → relire : l'ordre n'existe pas (404) ou la version est périmée (412).
 - 1 ligne → verrou exclusif sur l'en-tête jusqu'au commit, et `rowversion` incrémentée : tout écran qui affichait l'ancienne version recevra 412 à sa prochaine action.
@@ -230,9 +233,9 @@ Les types de `api/types.ts` sont écrits à la main d'après §7.3 (six types). 
 
 - **En-tête** : logo, navigation, bascule FR/EN, sélecteur d'utilisateur (avatar, nom, rôle). Le choix est conservé dans `localStorage` ; changer d'utilisateur recharge l'écran courant (les `allowedActions` changent).
 - **Commandes à planifier** (`/sales-orders`) : filtre ville (liste de `/to-plan/cities`), tableau paginé côté serveur, sélection multiple **conservée entre les pages**, barre de sélection fixe (nombre, poids total, « Ajouter à un transport »). Un changement de filtre revient à la page 1 et vide la sélection.
-- **Dialogue « Ajouter à un transport »** (flux A retenu) : à gauche les ordres Brouillon (`GET /transport-orders?status=DRAFT`), chacun avec sa jauge projetée ; un ordre où la sélection ne tient pas est grisé avec l'excédent affiché. À droite « Nouvel ordre » : date d'abord (aujourd'hui minimum), puis véhicules actifs, ceux déjà pris ce jour-là (`GET /transport-orders?deliveryDate=…`) ou trop petits pour la sélection grisés avec la raison ; « Créer et ajouter » enchaîne `POST /transport-orders` puis `POST …/lines`. Si la création réussit mais l'ajout échoue, on reste dans le dialogue sur l'ordre créé avec le message d'erreur (l'ordre vide existe ; c'est dit à l'utilisateur). Un refus de l'API s'affiche dans le dialogue sans perdre la sélection. Succès : toast + lien vers l'ordre, liste rechargée, sélection vidée. Le dialogue travaille sur les données de la liste (sans `version`) : il envoie l'ajout **sans** `If-Match`, l'API revérifiant tout sous verrou ; seul l'écran de détail, qui a la version, envoie `If-Match`.
+- **Dialogue « Ajouter à un transport »** (flux A retenu) : à gauche les ordres Brouillon (`GET /transport-orders?status=DRAFT`), chacun avec sa jauge projetée ; un ordre où la sélection ne tient pas est grisé avec l'excédent affiché. À droite « Nouvel ordre » : date d'abord (aujourd'hui minimum), puis véhicules actifs, ceux déjà pris ce jour-là (`GET /transport-orders?deliveryDate=…`) ou trop petits pour la sélection grisés avec la raison ; « Créer et ajouter » enchaîne `POST /transport-orders` puis `POST …/lines`. Si la création réussit mais l'ajout échoue, on reste dans le dialogue sur l'ordre créé avec le message d'erreur (l'ordre vide existe ; c'est dit à l'utilisateur). Un refus de l'API s'affiche dans le dialogue sans perdre la sélection. Succès : toast + lien vers l'ordre, liste rechargée, sélection vidée. Le dialogue envoie `If-Match` avec la `version` reçue dans la liste. Si l'ordre a changé depuis (412), il recharge les ordres brouillon, redessine les jauges et l'explique (« TO-0004 a été modifié entre-temps ; jauges mises à jour »), sans perdre la sélection.
 - **Ordres de transport** (`/transport-orders`) : filtre statut (segmenté), filtre date, tableau paginé avec mini-jauge, clic sur une ligne → détail. Bouton « + Nouvel ordre » : même sélecteur date + véhicule, crée un ordre vide et ouvre son détail.
-- **Détail** (`/transport-orders/:no`) : numéro, statut, étapes Brouillon → Validé → Parti (avec auteurs), jauge segmentée (un segment par commande, ambre au-delà de 85 %), véhicule (plaque), date, créé / validé par, lignes avec « Retirer » (Brouillon). Bloc Actions d'après `allowedActions` ; quand une action attendue manque, un texte explique pourquoi (validation réservée au responsable, ordre vide). « + Ajouter des commandes » ouvre `/sales-orders?target=TO-xxxx`, et le dialogue présélectionne cet ordre. Valider et Marquer parti demandent une confirmation (irréversibles) ; Retirer non (réversible).
+- **Détail** (`/transport-orders/:no`) : numéro, statut, étapes Brouillon → Validé → Parti (avec auteurs), jauge segmentée (un segment par commande, ambre au-delà de 85 %), véhicule (plaque), date, créé / validé par, lignes avec « Retirer » (Brouillon). Bloc Actions d'après `allowedActions` ; quand une action attendue manque, un texte explique pourquoi (validation réservée au responsable, ordre vide). « + Ajouter des commandes » ouvre `/sales-orders?target=TO-xxxx`, et le dialogue présélectionne cet ordre. Retirer, Valider et Marquer parti demandent une confirmation (`ConfirmDialog`) qui rappelle ce qui va se passer (« SO-1006 repassera À planifier », « l'ordre ne sera plus modifiable », « les 2 commandes passeront En livraison »), pour éviter toute action involontaire.
 - **États** sur chaque écran : squelettes pendant le chargement, état vide avec action (« Toutes les villes »), erreur de chargement avec « Réessayer », refus métier traduit depuis `code`, et 412 → « Ordre modifié entre-temps · Recharger ».
 
 ### 9.3 Responsive (maquettes : [`wireframes/02-responsive.html`](wireframes/02-responsive.html))
@@ -256,7 +259,7 @@ Cibles tactiles ≥ 44 px sur mobile. `useBreakpoint()` (sur `matchMedia`) chois
 | Niveau | Outil | Contenu | Priorité |
 |---|---|---|---|
 | Unitaires domaine | Jest | Capacité (limite exacte acceptée, +0,01 kg refusé, centièmes exacts), affectation (statut ≠ À planifier, doublons), transitions (tableau de tous les couples statut × action), rôle pour valider, date passée avec horloge figée, numérotation, `allowedActions` | **Obligatoire** |
-| API e2e | Jest + supertest, base Docker réelle | Pour chaque règle : un cas accepté et un refus avec son code et son statut HTTP ; camelCase des réponses ; 412 sur version périmée | Haute |
+| API e2e | Jest + supertest, base Docker réelle | Pour chaque règle : un cas accepté et un refus avec son code et son statut HTTP ; camelCase des réponses ; 428 sans `If-Match`, 412 sur version périmée | Haute |
 | Concurrence | idem | Deux ajouts simultanés qui tiennent chacun seuls mais pas ensemble → un 200 et un 409, charge finale ≤ capacité | Haute |
 | Composants | Vitest + Vue Test Utils | `LoadBar` (seuils), options du dialogue (ordre qui ne tient pas désactivé), boutons d'après `allowedActions`, `toIsoDate` | Bonus |
 
@@ -300,11 +303,12 @@ Noms de fichiers internes aux modules, libellés exacts des toasts et des textes
 Choix faits pendant la conception sans décision explicite du porteur ; chacun est réversible avant l'implémentation.
 
 1. Deux ajouts au sujet : `GET /sales-orders/to-plan/cities` et `allowedActions` dans le détail.
-2. `If-Match` facultatif (l'API reste sûre sans lui grâce au verrou d'en-tête), pour garder curl et Swagger simples.
+2. ~~`If-Match` facultatif~~ → décidé : obligatoire sur toute modification d'un ordre existant (428 si absent). Le verrou protège les données ; la version protège la décision de l'utilisateur (on ne valide pas un contenu qu'on n'a pas vu).
 3. 422 pour une demande fausse en soi, 409 pour un conflit avec l'état ; 404 réservé aux ressources du chemin.
 4. Messages `title` / `detail` de l'API en français ; traduction FR/EN côté front par `code`.
 5. Mutations renvoyant le détail complet (200) plutôt que 204.
 6. Domaine en centièmes de kg entiers.
 7. Création par l'onglet « Nouvel ordre » en deux appels (création puis ajout), sans route combinée.
-8. Retrait sans confirmation (réversible) ; validation et départ avec confirmation.
+8. ~~Retrait sans confirmation~~ → décidé : retrait, validation et départ avec confirmation.
 9. Types du front écrits à la main.
+10. Victime d'interblocage SQL (1205) ou délai de verrou dépassé → 409 `CONCURRENT_UPDATE`, l'utilisateur est invité à réessayer.
