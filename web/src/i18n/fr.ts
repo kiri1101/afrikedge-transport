@@ -9,6 +9,7 @@ export default {
     transportOrder: { DRAFT: 'Brouillon', VALIDATED: 'Validé', DEPARTED: 'Parti' },
   },
   common: { retry: 'Réessayer', loading: 'Chargement…', comingSoon: 'Écran à venir.' },
+  detail: { lifecycle: 'Cycle de vie', by: 'par {user}' },
   errors: {
     UNKNOWN: 'Une erreur inattendue est survenue.',
     NETWORK_ERROR: "Le serveur ne répond pas. Vérifiez que l'API est lancée.",

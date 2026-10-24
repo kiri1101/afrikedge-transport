@@ -11,6 +11,7 @@ export default {
     transportOrder: { DRAFT: 'Draft', VALIDATED: 'Validated', DEPARTED: 'Departed' },
   },
   common: { retry: 'Retry', loading: 'Loading…', comingSoon: 'Screen coming soon.' },
+  detail: { lifecycle: 'Lifecycle', by: 'by {user}' },
   errors: {
     UNKNOWN: 'Something unexpected went wrong.',
     NETWORK_ERROR: 'The server does not answer. Check that the API is running.',

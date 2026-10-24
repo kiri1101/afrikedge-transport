@@ -67,20 +67,20 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 
 ## Implémentation : front
 
-### ✅ 7. Socle front
+### ✅ 7. Socle front — `a0c80f0`
 - ✅ Vite + Vue 3 + Pinia + Router, PrimeVue (Aura, teal), PrimeIcons, Tailwind 4, polices IBM Plex
 - ✅ i18n FR / EN (messages par code d'erreur)
 - ✅ Client HTTP (`X-User-Id`, `If-Match`, erreurs problem+json)
 - ✅ En-tête : navigation, sélecteur d'utilisateur, langue ; barre d'onglets mobile
 - ✅ Tests (12) : dates, poids, client HTTP ; vérifié dans le navigateur (couche PrimeVue, aucune bannière de licence, mobile sans défilement horizontal)
 
-### 🔄 8. Composants d'interface
-- ⬜ Plaque d'immatriculation, étiquette de statut, étapes du cycle de vie
-- ⬜ Jauge de chargement segmentée (projection, dépassement)
-- ⬜ États chargement / vide / erreur
-- ⬜ Tests de la jauge
+### ✅ 8. Composants d'interface
+- ✅ Plaque d'immatriculation, étiquette de statut, étapes du cycle de vie
+- ✅ Jauge de chargement segmentée (projection, dépassement)
+- ✅ États chargement / vide / erreur
+- ✅ Tests de la jauge (4) : largeurs exactes, seuil 85 %, projection, dépassement
 
-### ⬜ 9. Écran Commandes à planifier
+### 🔄 9. Écran Commandes à planifier
 - ⬜ Filtre ville, pagination serveur
 - ⬜ Sélection conservée entre les pages, barre de sélection
 - ⬜ Tableau (bureau, tablette) / cartes (mobile)
