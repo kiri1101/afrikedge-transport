@@ -34,14 +34,14 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 - ✅ `allowedActions`, numérotation `TO-0001`
 - ✅ 33 tests unitaires (limite exacte de capacité, table statut × action)
 
-### ⬜ 3. Routes de lecture
-- ⬜ `GET /sales-orders/to-plan` (filtre ville, pagination)
-- ⬜ `GET /sales-orders/to-plan/cities`
-- ⬜ `GET /transport-orders` (filtres statut et date, pagination, charge par ordre)
-- ⬜ `GET /transport-orders/:no` (lignes, capacité restante, `allowedActions`, `ETag`)
-- ⬜ Tests e2e (ville accentuée, page vide, 404)
+### ✅ 3. Routes de lecture
+- ✅ `GET /sales-orders/to-plan` (filtre ville, pagination)
+- ✅ `GET /sales-orders/to-plan/cities`
+- ✅ `GET /transport-orders` (filtres statut et date, pagination, charge par ordre)
+- ✅ `GET /transport-orders/:no` (lignes, capacité restante, `allowedActions`, `ETag`)
+- ✅ Tests e2e (17 : ville accentuée, page vide, filtre date, 404, actions par rôle)
 
-### ⬜ 4. Création d'un ordre (R1, R2)
+### 🔄 4. Création d'un ordre (R1, R2)
 - ⬜ Garde d'action par rôle (`@RequireAction`)
 - ⬜ `POST /transport-orders` sous verrou véhicule + numéro
 - ⬜ Tests e2e : création, véhicule inactif/inconnu, date passée, véhicule déjà pris

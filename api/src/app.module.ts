@@ -4,6 +4,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { UserGuard } from './auth/user.guard';
 import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database/database.module';
+import { SalesOrdersModule } from './sales-orders/sales-orders.module';
+import { TransportOrdersModule } from './transport-orders/transport-orders.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 
 @Module({
@@ -12,6 +14,8 @@ import { VehiclesModule } from './vehicles/vehicles.module';
     CommonModule,
     DatabaseModule,
     VehiclesModule,
+    SalesOrdersModule,
+    TransportOrdersModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: UserGuard }],
 })
