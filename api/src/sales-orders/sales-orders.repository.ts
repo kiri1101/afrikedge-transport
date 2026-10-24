@@ -1,8 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import * as sql from 'mssql';
 import { offsetOf, Page } from '../common/pagination';
-import { SqlParams, SqlService } from '../database/sql.service';
-import { salesOrderStatusFromCode } from '../domain/statuses';
+import {
+  inList,
+  SqlParams,
+  SqlRunner,
+  SqlService,
+} from '../database/sql.service';
+import { Candidate } from '../domain/rules';
+import {
+  SALES_ORDER_STATUS_CODE,
+  SalesOrderStatus,
+  salesOrderStatusFromCode,
+} from '../domain/statuses';
+import { toHundredths } from '../domain/weights';
 import { SalesOrderDto } from './sales-order.dto';
 import { ToPlanQuery } from './to-plan.query';
 
@@ -67,5 +78,45 @@ export class SalesOrdersRepository {
       `SELECT DISTINCT [Delivery City] AS city FROM [Sales Order] WHERE [Status] = 0 ORDER BY [Delivery City]`,
     );
     return rows.map((row) => row.city);
+  }
+
+  /** The requested orders, locked until commit so no other transaction can claim them meanwhile. */
+  async findCandidates(tx: SqlRunner, nos: string[]): Promise<Candidate[]> {
+    const list = inList('so', nos, sql.NVarChar(20));
+    const { rows } = await tx.query<{
+      no: string;
+      statusCode: number;
+      weightKg: number;
+    }>(
+      `SELECT [No_] AS no, [Status] AS statusCode, [Total Weight (kg)] AS weightKg
+       FROM [Sales Order] WITH (UPDLOCK, ROWLOCK)
+       WHERE [No_] IN (${list.placeholders})`,
+      list.params,
+    );
+    return rows.map((row) => ({
+      no: row.no,
+      status: salesOrderStatusFromCode(row.statusCode),
+      weight: toHundredths(Number(row.weightKg)),
+    }));
+  }
+
+  /** Compare-and-set: only rows still in `from` move to `to`; returns how many moved. */
+  async setStatus(
+    tx: SqlRunner,
+    nos: string[],
+    to: SalesOrderStatus,
+    from: SalesOrderStatus,
+  ): Promise<number> {
+    const list = inList('so', nos, sql.NVarChar(20));
+    const { rowsAffected } = await tx.query(
+      `UPDATE [Sales Order] SET [Status] = @to
+       WHERE [No_] IN (${list.placeholders}) AND [Status] = @from`,
+      {
+        ...list.params,
+        to: [sql.TinyInt, SALES_ORDER_STATUS_CODE[to]],
+        from: [sql.TinyInt, SALES_ORDER_STATUS_CODE[from]],
+      },
+    );
+    return rowsAffected;
   }
 }

@@ -7,10 +7,14 @@ import { SqlRunner, SqlService } from '../database/sql.service';
 import { nextTransportOrderNo } from '../domain/order-number';
 import {
   allowedActions,
+  assertCanAddLines,
+  assertCanRemoveLine,
   assertDeliveryDateNotPast,
   assertVehicleFree,
   assertVehicleUsable,
+  OrderState,
 } from '../domain/rules';
+import { SalesOrdersRepository } from '../sales-orders/sales-orders.repository';
 import { toHundredths, toKg } from '../domain/weights';
 import { CreateTransportOrderDto } from './dto/create-transport-order.dto';
 import { ListTransportOrdersQuery } from './dto/list-transport-orders.query';
@@ -25,6 +29,7 @@ export class TransportOrdersService {
   constructor(
     private readonly sql: SqlService,
     private readonly orders: TransportOrdersRepository,
+    private readonly salesOrders: SalesOrdersRepository,
     private readonly clock: Clock,
   ) {}
 
@@ -82,6 +87,83 @@ export class TransportOrdersService {
       ),
       lines,
       allowedActions: allowedActions(summary, user.role),
+    };
+  }
+
+  /** R3–R7: all or nothing, under the header lock. */
+  async addLines(
+    no: string,
+    version: string,
+    salesOrderNos: string[],
+    user: CurrentUser,
+  ): Promise<TransportOrderDetailDto> {
+    return this.sql.transaction(async (tx) => {
+      const order = await this.lockOrFail(tx, no, version);
+      const found = await this.salesOrders.findCandidates(tx, salesOrderNos);
+      assertCanAddLines(order, salesOrderNos, found);
+
+      // Defence in depth: the candidates are locked, so this should always move every row.
+      const planned = await this.salesOrders.setStatus(
+        tx,
+        salesOrderNos,
+        'PLANNED',
+        'TO_PLAN',
+      );
+      if (planned !== salesOrderNos.length) {
+        throw new DomainError('SALES_ORDER_NOT_PLANNABLE', { salesOrderNos });
+      }
+      await this.orders.insertLines(tx, order.no, salesOrderNos);
+      return this.getDetail(order.no, user, tx);
+    });
+  }
+
+  /** R6, R7 */
+  async removeLine(
+    no: string,
+    version: string,
+    salesOrderNo: string,
+    user: CurrentUser,
+  ): Promise<TransportOrderDetailDto> {
+    return this.sql.transaction(async (tx) => {
+      const order = await this.lockOrFail(tx, no, version);
+      const lineExists = await this.orders.lineExists(
+        tx,
+        order.no,
+        salesOrderNo,
+      );
+      assertCanRemoveLine(order, lineExists, salesOrderNo);
+
+      await this.orders.deleteLine(tx, order.no, salesOrderNo);
+      await this.salesOrders.setStatus(
+        tx,
+        [salesOrderNo],
+        'TO_PLAN',
+        'PLANNED',
+      );
+      return this.getDetail(order.no, user, tx);
+    });
+  }
+
+  /** Locks the header if `version` is current; otherwise 404 (no such order) or 412 (stale). */
+  private async lockOrFail(
+    tx: SqlRunner,
+    no: string,
+    version: string,
+  ): Promise<OrderState> {
+    if (!(await this.orders.lockHeader(tx, no, version))) {
+      throw (await this.orders.exists(tx, no))
+        ? new DomainError('STALE_VERSION', { transportOrderNo: no })
+        : new DomainError('TRANSPORT_ORDER_NOT_FOUND', {
+            transportOrderNo: no,
+          });
+    }
+    const summary = await this.orders.findSummary(tx, no);
+    return {
+      no: summary!.no,
+      status: summary!.status,
+      capacity: toHundredths(summary!.capacityKg),
+      load: toHundredths(summary!.totalWeightKg),
+      lineCount: summary!.lineCount,
     };
   }
 }

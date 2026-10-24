@@ -8,7 +8,10 @@ export async function createTestApp(): Promise<INestApplication> {
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();
-  const app = moduleRef.createNestApplication({ logger: false });
+  const app = moduleRef.createNestApplication({
+    // E2E_LOG=1 shows server errors (500s) while debugging a test.
+    logger: process.env.E2E_LOG ? ['error'] : false,
+  });
   configureApp(app);
   await app.init();
   return app;

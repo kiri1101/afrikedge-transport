@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as sql from 'mssql';
 import { offsetOf, Page } from '../common/pagination';
-import { SqlParams, SqlRunner } from '../database/sql.service';
+import { inList, SqlParams, SqlRunner } from '../database/sql.service';
 import {
   TRANSPORT_ORDER_STATUS_CODE,
   transportOrderStatusFromCode,
@@ -184,6 +184,75 @@ export class TransportOrdersRepository {
         deliveryDate: [sql.NVarChar(10), order.deliveryDate],
         status: [sql.TinyInt, TRANSPORT_ORDER_STATUS_CODE.DRAFT],
         createdBy: [sql.NVarChar(50), order.createdBy],
+      },
+    );
+  }
+
+  /**
+   * First statement of every change to an existing order (ADR-0002, ADR-0003): takes an exclusive
+   * lock on the header until commit and bumps its rowversion — only if the caller saw the current one.
+   */
+  async lockHeader(
+    tx: SqlRunner,
+    no: string,
+    version: string,
+  ): Promise<boolean> {
+    const { rowsAffected } = await tx.query(
+      `UPDATE [Transport Order] SET [Status] = [Status]
+       WHERE [No_] = @no AND [timestamp] = CONVERT(binary(8), @version, 2)`,
+      { no: [sql.NVarChar(20), no], version: [sql.NVarChar(16), version] },
+    );
+    return rowsAffected === 1;
+  }
+
+  async exists(tx: SqlRunner, no: string): Promise<boolean> {
+    const { rows } = await tx.query(
+      `SELECT 1 AS found FROM [Transport Order] WHERE [No_] = @no`,
+      { no: [sql.NVarChar(20), no] },
+    );
+    return rows.length > 0;
+  }
+
+  async lineExists(
+    tx: SqlRunner,
+    no: string,
+    salesOrderNo: string,
+  ): Promise<boolean> {
+    const { rows } = await tx.query(
+      `SELECT 1 AS found FROM [Transport Order Line]
+       WHERE [Transport Order No_] = @no AND [Sales Order No_] = @salesOrderNo`,
+      {
+        no: [sql.NVarChar(20), no],
+        salesOrderNo: [sql.NVarChar(20), salesOrderNo],
+      },
+    );
+    return rows.length > 0;
+  }
+
+  async insertLines(
+    tx: SqlRunner,
+    no: string,
+    salesOrderNos: string[],
+  ): Promise<void> {
+    const list = inList('so', salesOrderNos, sql.NVarChar(20));
+    const values = salesOrderNos.map((_, i) => `(@no, @so${i})`).join(', ');
+    await tx.query(
+      `INSERT INTO [Transport Order Line] ([Transport Order No_], [Sales Order No_]) VALUES ${values}`,
+      { ...list.params, no: [sql.NVarChar(20), no] },
+    );
+  }
+
+  async deleteLine(
+    tx: SqlRunner,
+    no: string,
+    salesOrderNo: string,
+  ): Promise<void> {
+    await tx.query(
+      `DELETE FROM [Transport Order Line]
+       WHERE [Transport Order No_] = @no AND [Sales Order No_] = @salesOrderNo`,
+      {
+        no: [sql.NVarChar(20), no],
+        salesOrderNo: [sql.NVarChar(20), salesOrderNo],
       },
     );
   }
