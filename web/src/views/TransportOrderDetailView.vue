@@ -165,7 +165,7 @@ const addLines = () => router.push({ path: '/sales-orders', query: { target: pro
                   {{ formatDate(order.deliveryDate) }} · {{ order.createdBy }}<template v-if="order.validatedBy"> · {{ order.validatedBy }}</template>
                 </p>
               </div>
-              <OrderActions v-if="!isMobile" :order="order" :role="user.role" @add-lines="addLines" @validate="validate" @depart="depart" />
+              <OrderActions v-if="!isMobile" :order="order"   :busy="store.busy" :role="user.role" @add-lines="addLines" @validate="validate" @depart="depart" />
             </aside>
 
             <section class="overflow-hidden rounded-xl border border-line bg-white">
@@ -181,7 +181,7 @@ const addLines = () => router.push({ path: '/sales-orders', query: { target: pro
                   + {{ isMobile ? t('selection.addShort') : t('detail.addLines') }}
                 </button>
               </div>
-              <OrderLines :lines="order.lines" :can-remove="canRemove" @remove="removeLine" />
+              <OrderLines :lines="order.lines" :can-remove="canRemove" :busy="store.busy" @remove="removeLine" />
             </section>
           </div>
 
@@ -202,14 +202,14 @@ const addLines = () => router.push({ path: '/sales-orders', query: { target: pro
             </dl>
             <div class="p-4">
               <h2 class="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">{{ t('detail.actions') }}</h2>
-              <OrderActions :order="order" :role="user.role" @add-lines="addLines" @validate="validate" @depart="depart" />
+              <OrderActions :order="order"   :busy="store.busy" :role="user.role" @add-lines="addLines" @validate="validate" @depart="depart" />
             </div>
           </aside>
         </div>
 
         <!-- Mobile: the main action stays under the thumb. -->
         <div v-if="isMobile" class="fixed inset-x-0 bottom-16 z-10 border-t border-line bg-white p-3">
-          <OrderActions compact :order="order" :role="user.role" @add-lines="addLines" @validate="validate" @depart="depart" />
+          <OrderActions compact :order="order"   :busy="store.busy" :role="user.role" @add-lines="addLines" @validate="validate" @depart="depart" />
         </div>
       </template>
     </AsyncState>

@@ -68,7 +68,7 @@ export default {
     add: 'Add to a transport',
     addShort: 'Add',
   },
-  pager: { previous: 'Previous page', next: 'Next page', page: '{page} / {pages}' },
+  pager: { label: 'Pagination', previous: 'Previous page', next: 'Next page', page: '{page} / {pages}' },
   dialog: {
     title: 'Add {n} order | Add {n} orders',
     existing: 'To a draft order',

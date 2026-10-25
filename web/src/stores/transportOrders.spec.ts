@@ -91,4 +91,28 @@ describe('transport orders store (detail)', () => {
     expect(store.staleNotice).toBe(true)
     expect(store.current?.version).toBe('AAAAAAAAAAAAAAA9')
   })
+
+  it('clears the stale notice when another order is opened', async () => {
+    const store = useTransportOrdersStore()
+    vi.mocked(fetchTransportOrder).mockResolvedValue(detail('AAAAAAAAAAAAAAA1'))
+    vi.mocked(validateOrder).mockRejectedValue(new ApiError(412, 'STALE_VERSION', '', ''))
+    await store.loadDetail('TO-0003')
+    await store.validate()
+    expect(store.staleNotice).toBe(true)
+
+    await store.loadDetail('TO-0004')
+
+    expect(store.staleNotice).toBe(false)
+  })
+
+  it('reports a change in flight as busy', async () => {
+    const store = useTransportOrdersStore()
+    vi.mocked(fetchTransportOrder).mockResolvedValue(detail('AAAAAAAAAAAAAAA1'))
+    vi.mocked(validateOrder).mockReturnValue(new Promise(() => {}))
+    await store.loadDetail('TO-0003')
+
+    void store.validate()
+
+    expect(store.busy).toBe(true)
+  })
 })

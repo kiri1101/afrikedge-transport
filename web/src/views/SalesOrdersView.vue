@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import Column from 'primevue/column'
 import DataTable, { type DataTablePageEvent } from 'primevue/datatable'
@@ -15,6 +14,7 @@ import AddToTransportDialog from '@/components/planning/AddToTransportDialog.vue
 import SalesOrderCards from '@/components/planning/SalesOrderCards.vue'
 import SelectionBar from '@/components/planning/SelectionBar.vue'
 import AsyncState from '@/components/ui/AsyncState.vue'
+import MobilePager from '@/components/ui/MobilePager.vue'
 import { useApiError } from '@/composables/useApiError'
 import { useBreakpoint } from '@/composables/useBreakpoint'
 import { useSalesOrdersStore } from '@/stores/salesOrders'
@@ -96,25 +96,7 @@ const rowClass = (order: SalesOrder) => (store.isSelected(order.no) ? '!bg-teal-
       >
         <div v-if="isMobile" class="p-3">
           <SalesOrderCards :items="items" :is-selected="store.isSelected" @toggle="store.toggle" />
-          <nav class="mt-3 flex items-center justify-center gap-4 text-sm" :aria-label="t('salesOrders.title')">
-            <Button
-              icon="pi pi-chevron-left"
-              text
-              rounded
-              :disabled="store.page <= 1"
-              :aria-label="t('pager.previous')"
-              @click="store.setPage(store.page - 1, store.pageSize)"
-            />
-            <span class="tabular">{{ t('pager.page', { page: store.page, pages }) }}</span>
-            <Button
-              icon="pi pi-chevron-right"
-              text
-              rounded
-              :disabled="store.page >= pages"
-              :aria-label="t('pager.next')"
-              @click="store.setPage(store.page + 1, store.pageSize)"
-            />
-          </nav>
+          <MobilePager :page="store.page" :pages="pages" @change="store.setPage($event, store.pageSize)" />
         </div>
 
         <DataTable

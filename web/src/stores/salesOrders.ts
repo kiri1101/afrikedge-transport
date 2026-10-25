@@ -29,6 +29,11 @@ export const useSalesOrdersStore = defineStore('salesOrders', () => {
     error.value = null
     try {
       result.value = await fetchToPlan({ city: city.value, page: page.value, pageSize: pageSize.value })
+      // Planning the last orders of the last page leaves it empty: step back to the new last page.
+      if (result.value.items.length === 0 && page.value > 1) {
+        page.value = Math.max(1, Math.ceil(result.value.total / pageSize.value))
+        result.value = await fetchToPlan({ city: city.value, page: page.value, pageSize: pageSize.value })
+      }
     } catch (e) {
       error.value = e
     } finally {

@@ -1,5 +1,5 @@
-import { definePreset } from '@primevue/themes'
-import Aura from '@primevue/themes/aura'
+import { definePreset } from '@primeuix/themes'
+import Aura from '@primeuix/themes/aura'
 
 /**
  * Aura with a teal primary. Buttons use teal-700 (#0f766e) rather than Aura's default 500,

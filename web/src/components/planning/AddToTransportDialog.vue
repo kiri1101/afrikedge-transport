@@ -36,20 +36,29 @@ const notice = ref<string | null>(null)
 const addKg = computed(() => props.selection.reduce((sum, o) => sum + toHundredths(o.totalWeightKg), 0) / 100)
 const salesOrderNos = computed(() => props.selection.map((o) => o.no))
 const chosenDraft = computed(() => drafts.value.find((d) => d.no === draftNo.value) ?? null)
+const chosenFits = computed(
+  () => chosenDraft.value !== null && fitsIn(chosenDraft.value.totalWeightKg, chosenDraft.value.capacityKg, addKg.value),
+)
 const canSubmit = computed(() =>
-  mode.value === 'existing' ? chosenDraft.value !== null : vehicleCode.value !== null && deliveryDate.value !== '',
+  mode.value === 'existing' ? chosenFits.value : vehicleCode.value !== null && deliveryDate.value !== '',
 )
 const modeOptions = computed(() => [
   { label: t('dialog.existingShort'), value: 'existing' },
   { label: t('dialog.newShort'), value: 'new' },
 ])
 
-async function loadDrafts(): Promise<void> {
+/**
+ * Loads the draft orders. On opening, preselects the target or the first one that fits; on a reload
+ * (after a 412), never picks a different order for the user: an order that vanished or no longer
+ * fits is just unselected.
+ */
+async function loadDrafts(autoSelect = true): Promise<void> {
   const page = await fetchTransportOrders({ status: 'DRAFT', deliveryDate: null, page: 1, pageSize: 100 })
   drafts.value = page.items
   const target = drafts.value.find((d) => d.no === props.targetNo)
   const firstFitting = drafts.value.find((d) => fitsIn(d.totalWeightKg, d.capacityKg, addKg.value))
-  if (!chosenDraft.value) draftNo.value = (target ?? firstFitting)?.no ?? null
+  if (autoSelect && !chosenDraft.value) draftNo.value = (target ?? firstFitting)?.no ?? null
+  else if (!chosenFits.value) draftNo.value = null
 }
 
 async function open(): Promise<void> {
@@ -117,7 +126,7 @@ async function addToDraft(): Promise<string | null> {
   } catch (e) {
     if (e instanceof ApiError && e.status === 412) {
       // Someone changed that order since the list was loaded: refresh the gauges, keep the selection.
-      await loadDrafts()
+      await loadDrafts(false)
       notice.value = t('dialog.stale', { no: draft.no })
     } else {
       error.value = errorMessage(e)
@@ -139,7 +148,7 @@ async function addToNewOrder(): Promise<string | null> {
   } catch (e) {
     // The empty order exists now: say so, and offer it in the draft list.
     error.value = t('dialog.createdButNotFilled', { no: created.no, reason: errorMessage(e) })
-    await loadDrafts()
+    await loadDrafts(false)
     await loadBooked()
     draftNo.value = null
     return null

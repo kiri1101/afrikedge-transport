@@ -7,7 +7,7 @@ import type { SalesOrder } from '@/api/types'
 import { useBreakpoint } from '@/composables/useBreakpoint'
 import { formatKg, type Locale } from '@/utils/weights'
 
-defineProps<{ lines: SalesOrder[]; canRemove: boolean }>()
+defineProps<{ lines: SalesOrder[]; canRemove: boolean; busy?: boolean }>()
 defineEmits<{ remove: [salesOrderNo: string] }>()
 
 const { t, locale } = useI18n()
@@ -31,6 +31,8 @@ const kg = (value: number) => formatKg(value, locale.value as Locale)
         severity="danger"
         outlined
         rounded
+        class="!size-11"
+        :disabled="busy"
         :aria-label="t('detail.removeOrder', { no: line.no })"
         @click="$emit('remove', line.no)"
       />
@@ -57,6 +59,7 @@ const kg = (value: number) => formatKg(value, locale.value as Locale)
           severity="danger"
           outlined
           :label="t('detail.remove')"
+          :disabled="busy"
           :aria-label="t('detail.removeOrder', { no: data.no })"
           @click="$emit('remove', data.no)"
         />

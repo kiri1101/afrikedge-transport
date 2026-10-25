@@ -66,7 +66,7 @@ export default {
     add: 'Ajouter à un transport',
     addShort: 'Ajouter',
   },
-  pager: { previous: 'Page précédente', next: 'Page suivante', page: '{page} / {pages}' },
+  pager: { label: 'Pagination', previous: 'Page précédente', next: 'Page suivante', page: '{page} / {pages}' },
   dialog: {
     title: 'Ajouter {n} commande | Ajouter {n} commandes',
     existing: 'Dans un ordre brouillon',

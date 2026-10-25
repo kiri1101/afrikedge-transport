@@ -61,4 +61,14 @@ describe('OrderActions', () => {
 
     expect(wrapper.emitted('validate')).toHaveLength(1)
   })
+
+  it('disables the actions while a change is in flight', () => {
+    const wrapper = mount(OrderActions, {
+      props: { order: order('DRAFT', 2, ['ADD_LINES', 'REMOVE_LINES', 'VALIDATE']), role: 'LOGISTICS_MANAGER', busy: true },
+      global: testGlobal,
+    })
+
+    const validate = wrapper.findAll('button').find((b) => b.text().includes('Valider'))!
+    expect(validate.attributes('disabled')).toBeDefined()
+  })
 })

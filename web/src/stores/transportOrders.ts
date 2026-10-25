@@ -59,10 +59,13 @@ export const useTransportOrdersStore = defineStore('transportOrders', () => {
   const detailError = ref<unknown>(null)
   /** Set when a change hit a stale version: the order was reloaded and the user should look again. */
   const staleNotice = ref(false)
+  /** A change is in flight: actions are disabled so a second click cannot fire with the old version. */
+  const busy = ref(false)
 
   async function loadDetail(no: string): Promise<void> {
     detailLoading.value = true
     detailError.value = null
+    staleNotice.value = false
     try {
       current.value = await fetchTransportOrder(no)
     } catch (e) {
@@ -76,17 +79,20 @@ export const useTransportOrdersStore = defineStore('transportOrders', () => {
   /** Runs a change on the current order; on 412 reloads it and raises the notice, other errors propagate. */
   async function change(action: (order: TransportOrderDetail) => Promise<TransportOrderDetail>): Promise<boolean> {
     const order = current.value!
+    busy.value = true
     try {
       current.value = await action(order)
       staleNotice.value = false
       return true
     } catch (e) {
       if (e instanceof ApiError && e.status === 412) {
-        staleNotice.value = true
         await loadDetail(order.no)
+        staleNotice.value = true
         return false
       }
       throw e
+    } finally {
+      busy.value = false
     }
   }
 
@@ -118,6 +124,7 @@ export const useTransportOrdersStore = defineStore('transportOrders', () => {
     detailLoading,
     detailError,
     staleNotice,
+    busy,
     loadDetail,
     removeLine,
     validate,

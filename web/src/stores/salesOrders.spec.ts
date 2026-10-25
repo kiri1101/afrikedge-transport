@@ -26,6 +26,7 @@ describe('sales orders store', () => {
 
   it('keeps the selection across pages', async () => {
     const store = useSalesOrdersStore()
+    vi.mocked(fetchToPlan).mockResolvedValue({ items: [order('SO-1039', 1560)], page: 2, pageSize: 10, total: 11 })
     store.toggle(order('SO-1008', 430))
 
     await store.setPage(2, 10)
@@ -71,5 +72,17 @@ describe('sales orders store', () => {
 
     expect(store.error).toBeInstanceOf(Error)
     expect(store.loading).toBe(false)
+  })
+
+  it('goes back to the last page when the current one comes back empty', async () => {
+    const store = useSalesOrdersStore()
+    vi.mocked(fetchToPlan)
+      .mockResolvedValueOnce({ items: [], page: 2, pageSize: 10, total: 10 })
+      .mockResolvedValueOnce({ items: [order('SO-1008', 430)], page: 1, pageSize: 10, total: 10 })
+
+    await store.setPage(2, 10)
+
+    expect(store.page).toBe(1)
+    expect(fetchToPlan).toHaveBeenLastCalledWith({ city: null, page: 1, pageSize: 10 })
   })
 })

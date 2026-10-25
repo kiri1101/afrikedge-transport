@@ -11,6 +11,7 @@ import type { TransportOrderStatus, TransportOrderSummary } from '@/api/types'
 import NewOrderDialog from '@/components/planning/NewOrderDialog.vue'
 import TransportOrderCards from '@/components/planning/TransportOrderCards.vue'
 import AsyncState from '@/components/ui/AsyncState.vue'
+import MobilePager from '@/components/ui/MobilePager.vue'
 import LoadBar from '@/components/ui/LoadBar.vue'
 import PlateChip from '@/components/ui/PlateChip.vue'
 import StatusTag from '@/components/ui/StatusTag.vue'
@@ -32,6 +33,7 @@ onMounted(() => void store.load())
 
 const items = computed(() => store.result?.items ?? [])
 const total = computed(() => store.result?.total ?? 0)
+const pages = computed(() => Math.max(1, Math.ceil(total.value / store.pageSize)))
 const errorText = computed(() => (store.error ? errorMessage(store.error) : null))
 const filtered = computed(() => store.status !== null || store.deliveryDate !== null)
 
@@ -115,6 +117,7 @@ const onPage = (event: DataTablePageEvent) => store.setPage(event.page + 1, even
       >
         <div v-if="isMobile" class="p-3">
           <TransportOrderCards :items="items" />
+          <MobilePager :page="store.page" :pages="pages" @change="store.setPage($event, store.pageSize)" />
         </div>
 
         <DataTable

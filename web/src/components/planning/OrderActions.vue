@@ -9,7 +9,7 @@ import type { Role, TransportOrderDetail } from '@/api/types'
  * Buttons come only from the API's allowedActions; when an expected one is missing,
  * a hint says why instead of leaving the user guessing.
  */
-const props = defineProps<{ order: TransportOrderDetail; role: Role; compact?: boolean }>()
+const props = defineProps<{ order: TransportOrderDetail; role: Role; compact?: boolean; busy?: boolean }>()
 defineEmits<{ addLines: []; validate: []; depart: [] }>()
 
 const { t } = useI18n()
@@ -33,6 +33,8 @@ const hint = computed(() => {
       v-if="can('VALIDATE')"
       icon="pi pi-check"
       :label="t('detail.validate')"
+      :loading="busy"
+      :disabled="busy"
       :class="{ 'w-full': compact }"
       @click="$emit('validate')"
     />
@@ -40,6 +42,8 @@ const hint = computed(() => {
       v-if="can('DEPART')"
       icon="pi pi-truck"
       :label="t('detail.depart')"
+      :loading="busy"
+      :disabled="busy"
       :class="{ 'w-full': compact }"
       @click="$emit('depart')"
     />
@@ -48,6 +52,7 @@ const hint = computed(() => {
       icon="pi pi-plus"
       severity="secondary"
       :label="t('detail.addLines')"
+      :disabled="busy"
       @click="$emit('addLines')"
     />
   </div>
