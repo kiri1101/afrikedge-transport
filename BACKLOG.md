@@ -107,10 +107,25 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 
 ## Clôture
 
-### ✅ 13. README et vérification finale
+### ✅ 13. README et vérification finale — `559d2c0`
 - ✅ Lancement, choix techniques, table de traçabilité R1 à R10
 - ✅ Ce qui manque, temps passé
 - ✅ Vérification complète depuis un clone propre : API 40 + 58 tests, lint, build ; front 35 tests, type-check, lint, build
+
+## Revue finale (relecture indépendante de toute la branche)
+
+Verdict : prêt avec corrections, aucun problème critique. Corrigé, chaque fois avec un test écrit d'abord :
+
+- ✅ Dates ISO non calendaires (`2026-W43-1`) → 400 au lieu de 500 — `3a92ce0`
+- ✅ Numérotation insensible à un numéro non numérique venu de l'ERP — `3a92ce0`
+- ✅ Test prouvant que R4 est tout-ou-rien — `3a92ce0`
+- ✅ Avis « modifié entre-temps » effacé en changeant d'ordre — `47c48ee`
+- ✅ Page vide après avoir planifié les dernières commandes → retour à la dernière page — `47c48ee`
+- ✅ Pagination mobile des ordres de transport, cibles tactiles de 44 px — `47c48ee`
+- ✅ Actions désactivées pendant une modification (pas de double envoi) — `47c48ee`
+- ✅ Après un 412, le dialogue ne bascule jamais vers un autre ordre — `47c48ee`
+- ✅ PrimeIcons 7 et `@primeuix/themes` 2 (MIT) au lieu de PrimeIcons 8 (licence PrimeUI) et d'un paquet obsolète — `47c48ee`
+- ⬜ Mineurs reportés : voir « Ce qui manque » dans le README
 
 ## Bonus (§13 de la spécification, si le temps le permet)
 

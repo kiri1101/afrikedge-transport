@@ -3,7 +3,7 @@
 Test technique **SEFS1026** (Afrikedge) : module fullstack de planification des transports, de la sélection des commandes de vente jusqu'au départ du véhicule.
 
 - **API** : NestJS 11, TypeScript, SQL Server via `mssql` (requêtes paramétrées, sans ORM).
-- **Front** : Vue 3.5, TypeScript, Pinia, PrimeVue 4 (Aura) + PrimeIcons, Tailwind CSS 4, SPA Vite ; français par défaut, anglais disponible.
+- **Front** : Vue 3.5, TypeScript, Pinia, PrimeVue 4 (Aura) + PrimeIcons 7, Tailwind CSS 4, SPA Vite ; français par défaut, anglais disponible.
 - **Les 10 règles métier sont vérifiées par l'API**, y compris quand deux utilisateurs agissent en même temps.
 
 ## Lancer le projet
@@ -45,8 +45,8 @@ L'utilisateur se choisit dans l'en-tête (**diane**, répartition ; **eric**, re
 | Où | Commande | Contenu |
 |---|---|---|
 | `api/` | `npm test` | 40 tests unitaires : règles métier (domaine pur), horloge, journal d'audit |
-| `api/` | `npm run test:e2e` | 58 tests sur la vraie base (Docker lancé) : chaque règle, accepté et refusé, concurrence, audit |
-| `web/` | `npx vitest run` | 35 tests : client HTTP, jauge, dialogue d'ajout, actions selon le rôle, stores |
+| `api/` | `npm run test:e2e` | 63 tests sur la vraie base (Docker lancé) : chaque règle, accepté et refusé, concurrence, audit |
+| `web/` | `npx vitest run` | 42 tests : client HTTP, jauge, dialogue d'ajout, actions selon le rôle, stores, pagination mobile |
 
 Les tests e2e réinitialisent la base avec `init.sql` (une fois par fichier) : ne pas les lancer pendant une démonstration.
 
@@ -71,7 +71,7 @@ Chaque décision a son ADR dans [`docs/adr/`](docs/adr/README.md) ; les plus imp
 - **Dates en chaînes `YYYY-MM-DD`** de bout en bout et « aujourd'hui » donné par une horloge injectable réglée sur `Africa/Douala` ([ADR-0006](docs/adr/0006-dates-chaines-horloge-douala.md)).
 - **`allowedActions`** : l'API dit au front quels boutons afficher, avec la même fonction que celle qui protège les routes ([ADR-0007](docs/adr/0007-allowed-actions-api.md)).
 - **Journal d'audit** : requêtes, réponses, erreurs et chaque instruction SQL, corrélées par `X-Request-Id`, en JSON lines dans `api/logs/audit.log` ([ADR-0011](docs/adr/0011-journal-audit.md)).
-- **Front** : PrimeVue 4 (licence MIT, vérifiée) pour les composants lourds, Tailwind pour la mise en page, composants métier faits main (jauge, plaque, étapes) ; un composable `useBreakpoint()` monte soit un tableau, soit des cartes ([ADR-0010](docs/adr/0010-primevue-tailwind-vite.md)).
+- **Front** : PrimeVue 4, PrimeIcons 7 et `@primeuix/themes` 2, tous sous licence MIT (vérifié paquet par paquet : PrimeIcons 8 et PrimeVue 5 passent sous licence commerciale PrimeUI, d'où les versions fixées) pour les composants lourds, Tailwind pour la mise en page, composants métier faits main (jauge, plaque, étapes) ; un composable `useBreakpoint()` monte soit un tableau, soit des cartes ([ADR-0010](docs/adr/0010-primevue-tailwind-vite.md)).
 
 ### Ajouts au contrat du sujet
 
@@ -98,7 +98,7 @@ Unitaires : `api/src/domain/*.spec.ts` ; e2e : `api/test/*.e2e-spec.ts`.
 | R1 | Création en Brouillon, véhicule actif, date non passée | `rules.assertDeliveryDateNotPast`, `assertVehicleUsable` ; horloge `ZonedClock` | unit : *refuses a past date and accepts today*, *refuses an unknown or inactive vehicle*, *returns the Douala date, already tomorrow at 23:30 UTC* · e2e : *R1 creates a DRAFT order TO-0005…*, *R1 refuses an inactive vehicle…*, *R1 refuses yesterday…* |
 | R2 | Un ordre par véhicule et par date | `rules.assertVehicleFree`, ligne véhicule verrouillée (`UPDLOCK`) | unit : *refuses a vehicle already booked that day* · e2e : *R2 refuses a second order for VH-01 tomorrow with 409* |
 | R3 | Seules les commandes À planifier ; une commande dans un seul ordre | `rules.assertCanAddLines`, `findCandidates` (`UPDLOCK`), `setStatus` (compare-and-set) | unit : *refuses an order that is not TO_PLAN*, *refuses unknown numbers*, *refuses duplicates in one request* · e2e : *R3 refuses an order already planned*, *never puts one sales order in two transport orders* (concurrence) |
-| R4 | Plusieurs commandes en une fois | `AddLinesDto` (1 à 50), une transaction tout-ou-rien | e2e : *R4/R6 adds three orders at once and plans them* |
+| R4 | Plusieurs commandes en une fois | `AddLinesDto` (1 à 50), une transaction tout-ou-rien | e2e : *R4/R6 adds three orders at once and plans them*, *R4 adds nothing when one order of the batch is refused* |
 | R5 | Poids total ≤ capacité, toujours | `rules.assertCanAddLines` en centièmes, sous verrou d'en-tête | unit : *accepts a load exactly equal to capacity*, *refuses one hundredth of a kg over capacity*, *sums several orders before comparing* · e2e : *R5 accepts a load exactly equal to capacity*, *R5 refuses going over capacity with the excess*, *adds weights with cents exactly*, *lets only one of two simultaneous adds on the same order win* (concurrence) |
 | R6 | Ajout → Planifiée ; retrait → À planifier | `TransportOrdersService.addLines` / `removeLine` | e2e : *R4/R6 adds three orders at once…*, *R6 removes a line and puts the order back to plan* |
 | R7 | Ajout / retrait seulement en Brouillon | `rules.assertCanAddLines` / `assertCanRemoveLine` | unit : *refuses adding to a non-draft order*, *refuses removing from a non-draft order* · e2e : *R7 refuses changes to a validated order*, *R7 refuses removing from a validated order* |
@@ -117,6 +117,7 @@ Unitaires : `api/src/domain/*.spec.ts` ; e2e : `api/test/*.e2e-spec.ts`.
 - **Rotation et collecte du journal d'audit** (logrotate, Loki / ELK).
 - **Images Docker pour l'API et le front**, et une CI qui lance les trois suites de tests.
 - **Bonus non fait** : diagrammes interactifs (archify) pour la présentation ; les diagrammes Mermaid de [`docs/diagrams.md`](docs/diagrams.md) couvrent le besoin.
+- **Points relevés par la revue finale, non corrigés** (mineurs) : la date « aujourd'hui » du front suit le fuseau du navigateur et non celui de Douala ; si l'ajout échoue juste après la création d'un ordre, le dialogue ne se repositionne pas sur l'ordre créé ; le `SET LOCK_TIMEOUT` reste sur la connexion du pool ; le journal d'audit enregistre le corps et l'utilisateur annoncé avant authentification ; les groupes de boutons radio n'ont pas de navigation aux flèches.
 - **Limite connue** : les dates du jeu d'essai sont calculées par SQL Server en UTC, l'application raisonne en heure de Douala (UTC+1) ; entre minuit et 1 h, « demain » côté données et côté application diffèrent d'un jour (ADR-0006).
 
 ## Temps passé
@@ -127,9 +128,10 @@ Détail par séance dans [`docs/time-log.md`](docs/time-log.md) ; l'historique G
 |---|---|
 | Conception (analyse, maquettes, spécification, plan, ADR, diagrammes) | 1 h 55 |
 | Environnement (installation de Docker, base) | 20 min, hors développement |
-| Implémentation (API, journal d'audit, front, README) | voir le journal (≈ 2 h 30) |
+| Implémentation (API, journal d'audit, front, README, revue et corrections) | 2 h 51 |
+| **Total** | **4 h 46** |
 
-La conception a été faite avant le premier commit de code, volontairement : elle est comptée et visible, pas cachée.
+La conception a été faite avant le premier commit de code, volontairement : elle est comptée et visible, pas cachée. Le total dépasse les 4 h indicatives du sujet ; la répartition ci-dessus montre où le temps est allé.
 
 ## Méthode et outils
 
