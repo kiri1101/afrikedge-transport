@@ -99,7 +99,7 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 - ✅ Cartes sur mobile
 - ✅ Tests du store (2) ; vérifié avec l'API : tri, filtre Brouillon → 2, création TO-0005 → détail
 
-### ✅ 12. Écran Détail d'un ordre
+### ✅ 12. Écran Détail d'un ordre — `70c14c5`
 - ✅ Jauge, étapes, véhicule, lignes
 - ✅ Actions selon `allowedActions` avec explications
 - ✅ Confirmations (retrait, validation, départ), gestion du 412
@@ -107,11 +107,11 @@ Légende : ✅ terminé · 🔄 en cours · ⬜ à faire · ✂️ abandonné (r
 
 ## Clôture
 
-### 🔄 13. README et vérification finale
-- ⬜ Lancement, choix techniques, table de traçabilité R1 à R10
-- ⬜ Ce qui manque, temps passé
-- ⬜ Vérification complète depuis un clone propre
+### ✅ 13. README et vérification finale
+- ✅ Lancement, choix techniques, table de traçabilité R1 à R10
+- ✅ Ce qui manque, temps passé
+- ✅ Vérification complète depuis un clone propre : API 40 + 58 tests, lint, build ; front 35 tests, type-check, lint, build
 
 ## Bonus (§13 de la spécification, si le temps le permet)
 
-- ⬜ Diagrammes interactifs (archify) pour la présentation
+- ✂️ Diagrammes interactifs (archify) pour la présentation : non fait, les diagrammes Mermaid couvrent le besoin (voir README)

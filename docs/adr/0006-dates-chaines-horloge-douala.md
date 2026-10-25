@@ -14,3 +14,6 @@ Les dates circulent partout en chaînes `YYYY-MM-DD` : `CONVERT(char(10), [Deliv
 - La règle R1 se teste avec une horloge figée (cas de 23 h 30 UTC, déjà le lendemain à Douala).
 - La comparaison de dates est une comparaison de chaînes.
 - Les dates du jeu d'essai étant calculées par SQL Server en UTC, un test lancé entre minuit et 1 h à Douala peut voir « demain » décalé ; c'est documenté.
+
+## Tel que construit
+À l'écriture, la date n'est pas passée en `sql.Date` (qui repasserait par un `Date` JS) mais en `NVarChar(10)` converti côté SQL : `CONVERT(date, @deliveryDate, 23)`. Aucune date ne transite donc jamais par un `Date` JS côté API, ce qui va dans le sens de la décision. Le décalage de minuit décrit ci-dessus a été observé pendant le développement (base réinitialisée à 00 h 38, heure de Douala).
