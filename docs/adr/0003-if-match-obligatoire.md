@@ -15,3 +15,6 @@ Ajout et retrait de lignes, validation et départ exigent `If-Match: "<version>"
 - Le front envoie toujours la version qu'il affiche ; sur 412, il recharge et prévient l'utilisateur (« Ordre modifié entre-temps »).
 - Tester l'API à la main demande une lecture préalable ; le README et Swagger montrent l'exemple.
 - CORS doit exposer `ETag` (`exposedHeaders`), sinon le navigateur ne peut pas le lire.
+
+## Tel que construit
+Bug trouvé après la revue : l'`ETag` étant la version de l'ordre, identique pour tous les utilisateurs, alors que le détail varie selon l'utilisateur (`allowedActions`), Express répondait `304 Not Modified` à une revalidation du navigateur, qui affichait alors la vue mise en cache par l'utilisateur précédent (le bouton « Valider » restait visible pour diane). Correctif : l'API ne fait aucun cache HTTP. Elle ignore `If-None-Match` (jamais de 304) et répond `Cache-Control: no-store`. L'`ETag` reste un jeton de concurrence pour `If-Match`, pas un validateur de cache. Test : *serves each user their own view even when a browser revalidates with another user's ETag*.

@@ -127,6 +127,10 @@ Verdict : prêt avec corrections, aucun problème critique. Corrigé, chaque foi
 - ✅ PrimeIcons 7 et `@primeuix/themes` 2 (MIT) au lieu de PrimeIcons 8 (licence PrimeUI) et d'un paquet obsolète — `47c48ee`
 - ⬜ Mineurs reportés : voir « Ce qui manque » dans le README
 
+## Bug signalé en testant après la revue
+
+- ✅ Après un changement d'utilisateur, le détail pouvait afficher les boutons de l'utilisateur précédent : l'API répondait 304 à une revalidation du navigateur alors que le détail dépend de l'utilisateur. L'API ne fait plus de cache HTTP (test e2e écrit d'abord, ADR-0003)
+
 ## Bonus (§13 de la spécification, si le temps le permet)
 
 - ✂️ Diagrammes interactifs (archify) pour la présentation : non fait, les diagrammes Mermaid couvrent le besoin (voir README)

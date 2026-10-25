@@ -45,7 +45,7 @@ L'utilisateur se choisit dans l'en-tête (**diane**, répartition ; **eric**, re
 | Où | Commande | Contenu |
 |---|---|---|
 | `api/` | `npm test` | 40 tests unitaires : règles métier (domaine pur), horloge, journal d'audit |
-| `api/` | `npm run test:e2e` | 63 tests sur la vraie base (Docker lancé) : chaque règle, accepté et refusé, concurrence, audit |
+| `api/` | `npm run test:e2e` | 64 tests sur la vraie base (Docker lancé) : chaque règle, accepté et refusé, concurrence, audit |
 | `web/` | `npx vitest run` | 42 tests : client HTTP, jauge, dialogue d'ajout, actions selon le rôle, stores, pagination mobile |
 
 Les tests e2e réinitialisent la base avec `init.sql` (une fois par fichier) : ne pas les lancer pendant une démonstration.
@@ -79,7 +79,7 @@ Chaque décision a son ADR dans [`docs/adr/`](docs/adr/README.md) ; les plus imp
 |---|---|
 | `GET /sales-orders/to-plan/cities` | Alimenter le filtre par ville, absent des routes du sujet |
 | `allowedActions` dans le détail | Une seule source pour les droits (rôle × statut) |
-| `version` + `ETag`, `If-Match` obligatoire | Contrôle de concurrence sur la `rowversion` fournie |
+| `version` + `ETag`, `If-Match` obligatoire | Contrôle de concurrence sur la `rowversion` fournie ; pas de cache HTTP (`Cache-Control: no-store`, jamais de 304), car le détail varie selon l'utilisateur |
 | `X-Request-Id` | Corrélation du journal d'audit |
 
 Exemple pour valider un ordre à la main (bash, avec `jq`) :
@@ -128,8 +128,8 @@ Détail par séance dans [`docs/time-log.md`](docs/time-log.md) ; l'historique G
 |---|---|
 | Conception (analyse, maquettes, spécification, plan, ADR, diagrammes) | 1 h 55 |
 | Environnement (installation de Docker, base) | 20 min, hors développement |
-| Implémentation (API, journal d'audit, front, README, revue et corrections) | 2 h 51 |
-| **Total** | **4 h 46** |
+| Implémentation (API, journal d'audit, front, README, revue et corrections, puis un bug de cache trouvé en testant) | 3 h 01 |
+| **Total** | **4 h 56** |
 
 La conception a été faite avant le premier commit de code, volontairement : elle est comptée et visible, pas cachée. Le total dépasse les 4 h indicatives du sujet ; la répartition ci-dessus montre où le temps est allé.
 

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import type { NextFunction, Request, Response } from 'express';
 import { AuditLog } from './audit/audit-log';
 import { DomainError } from './common/domain-error';
 import { ProblemDetailsFilter } from './common/problem-details.filter';
@@ -21,9 +22,23 @@ function flatten(errors: ValidationError[], parent = ''): FieldError[] {
   });
 }
 
+/**
+ * The API does no HTTP caching. Its ETag is the order version checked by If-Match, but a
+ * detail differs per user (allowedActions): answering a revalidation with 304 made the browser
+ * show the cached view of whoever opened that version first. Without If-None-Match Express
+ * never sends 304, and no-store keeps per-user customer data out of browser caches.
+ */
+function noHttpCaching(req: Request, res: Response, next: NextFunction): void {
+  delete req.headers['if-none-match'];
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+}
+
 /** Shared by main.ts and the e2e tests, so both run the same pipes, filter, CORS and docs. */
 export function configureApp(app: INestApplication): void {
   const config = app.get(ConfigService);
+
+  app.use(noHttpCaching);
 
   app.useGlobalPipes(
     new ValidationPipe({

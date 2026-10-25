@@ -109,6 +109,19 @@ describe('transport orders (read)', () => {
     expect(res.body.code).toBe('VALIDATION_FAILED');
   });
 
+  it("serves each user their own view even when a browser revalidates with another user's ETag", async () => {
+    // A browser caches eric's detail, then revalidates as diane with If-None-Match: same order version.
+    const asEric = await as(app, 'eric').get('/transport-orders/TO-0003');
+
+    const asDiane = await as(app, 'diane')
+      .get('/transport-orders/TO-0003')
+      .set('If-None-Match', asEric.headers.etag);
+
+    expect(asDiane.status).toBe(200);
+    expect(asDiane.body.allowedActions).toEqual(['ADD_LINES', 'REMOVE_LINES']);
+    expect(asDiane.headers['cache-control']).toBe('no-store');
+  });
+
   it('returns 404 TRANSPORT_ORDER_NOT_FOUND for TO-9999', async () => {
     const res = await as(app, 'diane').get('/transport-orders/TO-9999');
 

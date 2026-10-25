@@ -10,6 +10,7 @@ Temps actif uniquement : une ligne par séance de travail, pauses exclues. Heure
 | 2026-10-24 | 21:55 | 22:00 | 5 min | Environnement | Téléchargement de l'image SQL Server, initialisation et contrôle de la base |
 | 2026-10-24 | 22:04 | 23:43 | 1 h 39 | Implémentation | API complète (tâches 1 à 6), journal d'audit (6b), front : socle, composants, écran Commandes à planifier, dialogue d'ajout (tâches 7 à 10) |
 | 2026-10-25 | 00:37 | 01:49 | 1 h 12 | Implémentation | Écrans Ordres de transport et Détail, README, vérification depuis un clone propre, revue indépendante de la branche et corrections |
+| 2026-10-25 | 02:44 | 02:54 | 0 h 10 | Implémentation | Bug signalé en testant (boutons d'un autre utilisateur après changement) : diagnostic par le journal d'audit, test, correctif |
 
 ## Totaux
 
@@ -17,5 +18,5 @@ Temps actif uniquement : une ligne par séance de travail, pauses exclues. Heure
 |---|---|
 | Conception | 1 h 55 |
 | Environnement | 20 min (hors temps de développement) |
-| Implémentation | 2 h 51 (deux séances, pause de 23:43 à 00:37 non comptée) |
-| **Total conception + implémentation** | **4 h 46** (environnement non compté) |
+| Implémentation | 3 h 01 (trois séances, pauses non comptées) |
+| **Total conception + implémentation** | **4 h 56** (environnement non compté) |
