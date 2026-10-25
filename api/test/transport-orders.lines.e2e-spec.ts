@@ -102,6 +102,24 @@ describe('transport order lines', () => {
     expect(res.body.code).toBe('SALES_ORDER_UNKNOWN');
   });
 
+  it('R4 adds nothing when one order of the batch is refused', async () => {
+    const before = (await api.detail('TO-0004')).body;
+
+    const res = await api.add('TO-0004', before.version, [
+      'SO-1024',
+      'SO-1003',
+    ]);
+
+    expect(res.status).toBe(409);
+    const after = (await api.detail('TO-0004')).body;
+    expect(after.lineCount).toBe(before.lineCount);
+    expect(after.version).toBe(before.version);
+    const toPlan = await as(app, 'diane').get(
+      '/sales-orders/to-plan?city=Douala',
+    );
+    expect(toPlan.body.items.map((o: Line) => o.no)).toContain('SO-1024');
+  });
+
   it('refuses duplicates with 400', async () => {
     const res = await api.add('TO-0004', await api.versionOf('TO-0004'), [
       'SO-1024',

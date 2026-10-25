@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { as, createTestApp } from './support/app';
 import { addDays, todayInDouala } from './support/dates';
+import { SqlService } from '../src/database/sql.service';
 import { resetDb } from './support/db';
 
 describe('POST /transport-orders', () => {
@@ -81,5 +82,28 @@ describe('POST /transport-orders', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.code).toBe('VALIDATION_FAILED');
+  });
+
+  it.each(['2026-W43-1', '2026-10T10'])(
+    'rejects the non-calendar ISO date %s with 400',
+    async (date) => {
+      const res = await create('VH-08', date);
+
+      expect(res.status).toBe(400);
+      expect(res.body.code).toBe('VALIDATION_FAILED');
+    },
+  );
+
+  it('numbers past a non-numeric order number left by the ERP', async () => {
+    await app
+      .get(SqlService)
+      .query(
+        "INSERT INTO [Transport Order] ([No_], [Vehicle Code], [Delivery Date], [Status], [Created By]) VALUES ('TO-IMPORT', 'VH-09', '2030-01-01', 0, 'erp')",
+      );
+
+    const res = await create('VH-08', today);
+
+    expect(res.status).toBe(201);
+    expect(res.body.no).toBe('TO-0007');
   });
 });

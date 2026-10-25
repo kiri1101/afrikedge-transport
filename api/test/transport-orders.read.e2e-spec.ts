@@ -100,6 +100,15 @@ describe('transport orders (read)', () => {
     expect(res.body.allowedActions).toEqual(expected);
   });
 
+  it('rejects a non-calendar date filter with 400', async () => {
+    const res = await as(app, 'diane').get(
+      '/transport-orders?deliveryDate=2026-W43-1',
+    );
+
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('VALIDATION_FAILED');
+  });
+
   it('returns 404 TRANSPORT_ORDER_NOT_FOUND for TO-9999', async () => {
     const res = await as(app, 'diane').get('/transport-orders/TO-9999');
 

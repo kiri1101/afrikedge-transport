@@ -160,7 +160,7 @@ export class TransportOrdersRepository {
     const { rows } = await tx.query<{ no: string }>(
       `SELECT TOP 1 [No_] AS no
        FROM [Transport Order] WITH (UPDLOCK, HOLDLOCK)
-       WHERE [No_] LIKE 'TO-%'
+       WHERE [No_] LIKE 'TO-[0-9][0-9][0-9][0-9]%'
        ORDER BY LEN([No_]) DESC, [No_] DESC`,
     );
     return rows[0]?.no ?? null;
